@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Aventura en el Coliseo: Gladiadores</title>
+    <link rel="stylesheet" href="style.css">
+    
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    
+    <script type="module" src="src/main.js"></script>
+</head>
+<body>
+
+    <main id="app-container">
+
+        <section id="escena-inicio" class="escena visible">
+            <div class="tarjeta-presentacion">
+                <h1>BIENVENIDO AL ANFITEATRO ROMANO</h1>
+                <div class="avatar-container">
+                    <img id="img-jugador-inicio" src="img/Gladiador.png" alt="Avatar Jugador">
+                </div>
+                <div class="stats-container">
+                    <p>Nombre: <span id="nombre-jugador">Mérida</span></p>
+                    <p>Vida: <span id="vida-jugador">100</span></p>
+                    <p>Ataque: <span id="ataque-jugador">0</span></p>
+                    <p>Defensa: <span id="defensa-jugador">0</span></p>
+                    <p>Puntos: <span id="puntos-jugador">0</span></p>
+                </div>
+                <button id="btn-ir-mercado" class="btn-juego">Ir al Mercado</button>
+            </div>
+        </section>
+
+        <section id="escena-mercado" class="escena oculta">
+            <header class="mercado-header">
+                <h2>Armería LUSITANIA</h2>
+                <div class="inventario-resumen">
+                    Oro gastado: <span id="gasto-total">0</span> €
+                </div>
+            </header>
+            
+            <div id="contenedor-productos" class="grid-productos"></div>
+
+            <footer class="mercado-footer">
+                <h3>Tu Inventario Actual</h3>
+                <div id="contenedor-inventario" class="grid-inventario"></div>
+                <button id="btn-mercado-continuar" class="btn-juego">Ir a la Arena</button>
+            </footer>
+        </section>
+
+        <section id="escena-estado" class="escena oculta">
+            <div class="tarjeta-presentacion">
+                <h2>¡Preparado para el combate!</h2>
+                <div class="avatar-container">
+                    <img src="img/Gladiador.png" alt="Jugador Listo">
+                </div>
+                <div class="stats-container">
+                    <p>Ataque Total: <span id="stat-ataque-final">0</span></p>
+                    <p>Defensa Total: <span id="stat-defensa-final">0</span></p>
+                    <p>Vida Total: <span id="stat-vida-final">100</span></p>
+                </div>
+                <button id="btn-ver-enemigos" class="btn-juego">Ver Oponentes</button>
+            </div>
+        </section>
+
+        <section id="escena-enemigos" class="escena oculta">
+            <h2>Tus Oponentes en la Arena</h2>
+            <div id="lista-enemigos" class="grid-enemigos"></div>
+            <button id="btn-comenzar-batalla" class="btn-juego">¡QUE COMIENCE EL COMBATE!</button>
+        </section>
+
+        <section id="escena-batalla" class="escena oculta">
+            <div class="area-combate">
+                <div class="luchador" id="luchador-jugador">
+                    <img src="img/Gladiador.png" alt="Jugador">
+                    <div class="barra-vida"><div id="vida-bar-jugador" style="width: 100%"></div></div>
+                    <p>Vida: <span id="batalla-vida-jugador">0</span></p>
+                </div>
+
+                <div class="vs-logo">VS</div>
+
+                <div class="luchador" id="luchador-enemigo">
+                    <img id="img-enemigo-actual" src="" alt="Enemigo">
+                    <div class="barra-vida"><div id="vida-bar-enemigo" style="width: 100%"></div></div>
+                    <p>Vida: <span id="batalla-vida-enemigo">0</span></p>
+                </div>
+            </div>
+
+            <div class="registro-batalla">
+                <p id="mensaje-batalla">Turno 1: ¡Empieza la lucha!</p>
+            </div>
+
+            <button id="btn-siguiente-batalla" class="btn-juego oculta">Siguiente Enemigo</button>
+        </section>
+
+        <section id="escena-fin" class="escena oculta">
+            <div class="tarjeta-resultado">
+                <h1>Fin de los Juegos</h1>
+                <h2 id="rango-final">Calculando...</h2>
+                <p>Puntuación Final: <span id="puntuacion-final">0</span></p>
+                <button id="btn-reiniciar" class="btn-juego">Nueva Partida</button>
+            </div>
+        </section>
+
+    </main>
+
+</body>
+</html>
