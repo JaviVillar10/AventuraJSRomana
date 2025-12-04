@@ -16,7 +16,7 @@ import { Producto } from './classes/Producto.js';
 let jugador;
 let enemigos = [];
 let enemigoActualIndex = 0;
-let gastoTotal = 0;
+let gastoTotal = 500;
 
 
 /**
@@ -72,6 +72,12 @@ const asignarEventosBotones = () => {
 
     document.getElementById('btn-reiniciar').addEventListener('click', () => {
         location.reload();
+    });
+
+
+
+    document.getElementById('btn-ir-inicio').addEventListener('click', () => {
+        cambiarEscena('escena-inicio');
     });
 };
 
@@ -131,6 +137,7 @@ const cargarMercado = () => {
             <p>+${productoObj.bonus} (${productoObj.tipo})</p>
             <p class="precio">${formatearPrecio(productoObj.precio)}</p>
             <button class="btn-comprar">Comprar</button>
+            <button class="btn-nada"></button>
         `;
 
         const btn = tarjetaDiv.querySelector('.btn-comprar');
@@ -149,6 +156,7 @@ const cargarMercado = () => {
 };
 
 
+
 /**
  * Gestiona la lógica de compra y devolución de objetos.
  * Actualiza el inventario del jugador, el dinero gastado y la interfaz.
@@ -159,13 +167,18 @@ const cargarMercado = () => {
 function gestionarCompra(producto, boton, tarjetaDiv) {
     const index = jugador.inventario.findIndex(p => p.nombre === producto.nombre);
 
+//////////////////////////////////////////////////////////////////////////////////////////////////////////
+     if (gastoTotal < producto.precio){ boton.classList.replace('btn-comprar');}
+     
+////////////////////////////////////////////////////////////////////////////////////////////////////////
     if (index === -1) {
         jugador.agregarObjeto(producto);
-        gastoTotal += producto.precio;
-        
+        gastoTotal -= producto.precio; //ACABO DE PONER -= ANTES +=
         boton.textContent = "Retirar";
         boton.classList.add('btn-retirar');
         tarjetaDiv.style.backgroundColor = "#c8e6c9";
+
+        
     } else {
         jugador.inventario.splice(index, 1);
         gastoTotal -= producto.precio;
@@ -174,7 +187,9 @@ function gestionarCompra(producto, boton, tarjetaDiv) {
             jugador.vida -= producto.bonus;
             jugador.vidaMaxima -= producto.bonus;
         }
-
+       
+       
+     
         boton.textContent = "Comprar";
         boton.classList.remove('btn-retirar');
         tarjetaDiv.style.backgroundColor = "";
@@ -233,6 +248,7 @@ const iniciarSistemaBatallas = () => {
 const prepararBatalla = () => {
     const enemigo = enemigos[enemigoActualIndex];
     document.getElementById('img-enemigo-actual').src = enemigo.imagen;
+    gastoTotal + 5;
     actualizarBarrasVida(enemigo);
 
     document.getElementById('mensaje-batalla').textContent = `¡Aparece un ${enemigo.nombre}!`;
@@ -330,9 +346,9 @@ const resolverResultadoCombate = (enemigo) => {
         let puntosGanados = 100 + enemigo.ataque;
         if (enemigo instanceof Jefe) {
             puntosGanados = Math.floor(puntosGanados * enemigo.multiplicador);
-            document.getElementById('mensaje-batalla').textContent = `¡HAS DERROTADO AL JEFE! +${puntosGanados} puntos.`;
+            document.getElementById('mensaje-batalla').textContent = `¡HAS DERROTADO AL JEFE! +${puntosGanados}puntos  ${gastoTotal = +10} monedas.`;
         } else {
-            document.getElementById('mensaje-batalla').textContent = `¡Victoria! +${puntosGanados} puntos.`;
+            document.getElementById('mensaje-batalla').textContent = `¡Victoria! +${puntosGanados}puntos  ${gastoTotal = +5} monedas .`;
         }
         
         document.getElementById('mensaje-batalla').style.color = 'green';
@@ -370,8 +386,10 @@ const siguienteRonda = () => {
 const mostrarPantallaFinal = () => {
     const rangoH2 = document.getElementById('rango-final');
     const puntosSpan = document.getElementById('puntuacion-final');
+    
 
     puntosSpan.textContent = jugador.puntos;
+    
 
     if (jugador.puntos >= PUNTOS_PARA_VETERANO) {
         rangoH2.textContent = "¡VETERANO DE LA ARENA!";

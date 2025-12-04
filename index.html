@@ -14,7 +14,40 @@
 
     <main id="app-container">
 
-        <section id="escena-inicio" class="escena visible">
+        <section id="escena-crear" class="escena visible">
+            <div class="tarjeta-crear">
+                <h1>CREA TU PERSONAJE</h1>
+                <div class="avatar-container">
+                    <img id="img-jugador-inicio" src="img/Gladiador.png" alt="Avatar Jugador">
+                </div>
+
+                <form id="crear-personaje">
+                
+                    <label for="nombre">Nombre:</label>
+                    <input type="text" name="nombre-jugador" >
+
+                    <label for="ataque">Ataque:</label>
+                    <input type="number" name="ataque">
+
+                    <label for="nombre">Defensa:</label>
+                    <input type="number" name="defensa">
+
+                    <label for="nombre">Vida:</label>
+                    <input type="number" name="vida">
+
+                <button type="submit">Introducir datos del personaje</button>
+                </form>
+
+                <div class="stats-container">
+                </div>
+
+                <button id="btn-ir-inicio" class="btn-juego">Empieza la lucha</button>
+            </div>
+        </section>
+
+
+
+        <section id="escena-inicio" class="escena oculta">
             <div class="tarjeta-presentacion">
                 <h1>BIENVENIDO AL ANFITEATRO ROMANO</h1>
                 <div class="avatar-container">
@@ -35,7 +68,7 @@
             <header class="mercado-header">
                 <h2>Armería LUSITANIA</h2>
                 <div class="inventario-resumen">
-                    Oro gastado: <span id="gasto-total">0</span> €
+                    Dinero: <span id="gasto-total">500</span> €
                 </div>
             </header>
             

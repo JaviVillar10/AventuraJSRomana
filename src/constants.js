@@ -86,7 +86,7 @@ export const MERCADO_PRODUCTOS = [
         imagen: "img/Espada.png",
         tipo: "arma",
         bonus: 15, 
-        precio: 150,
+        precio: 100,
         rareza: "comun"
     },
     {
@@ -94,7 +94,7 @@ export const MERCADO_PRODUCTOS = [
         imagen: "img/Tridente.png",
         tipo: "arma",
         bonus: 30, 
-        precio: 300,
+        precio: 250,
         rareza: "rara"
     },
     {
@@ -102,7 +102,7 @@ export const MERCADO_PRODUCTOS = [
         imagen: "img/Casco.png",
         tipo: "armadura",
         bonus: 10, 
-        precio: 120,
+        precio: 80,
         rareza: "comun"
     },
     {
@@ -110,7 +110,7 @@ export const MERCADO_PRODUCTOS = [
         imagen: "img/Escudo.png",
         tipo: "armadura",
         bonus: 15, 
-        precio: 250,
+        precio: 200,
         rareza: "rara"
     },
     {
