@@ -5,27 +5,21 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Aventura en el Coliseo: Gladiadores</title>
     <link rel="stylesheet" href="style.css">
-    
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
-    
     <script type="module" src="src/main.js"></script>
 </head>
 <body>
-
     <main id="app-container">
-
         <section id="escena-crear" class="escena visible">
             <div class="tarjeta-crear">
                 <h1>CREA TU PERSONAJE</h1>
                 <div class="avatar-container">
                     <img id="img-jugador-inicio" src="img/Gladiador.png" alt="Avatar Jugador">
                 </div>
-
                 <form id="crear-personaje">
-                
                     <label for="nombre">Nombre:</label>
-                    <input type="text" name="nombre-jugador" id="nombre-input">
-                    <span id="error-nombre" style="color: #ff4d4d; font-size: 0.85em; display: block; min-height: 1.2em; font-weight: bold;"></span>
+                    <input type="text" name="nombre-jugador">
+                    <span id="error-nombre" style="color:red; display:block; font-size:0.8em; font-weight:bold;"></span>
 
                     <label for="ataque">Ataque:</label>
                     <input type="number" name="ataque" value="0">
@@ -35,19 +29,13 @@
 
                     <label for="vida">Vida:</label>
                     <input type="number" name="vida" value="100">
-
-                    <span id="error-stats" style="color: #ff4d4d; font-size: 0.85em; display: block; min-height: 1.2em; font-weight: bold; margin-top: 5px;"></span>
-
+                    
+                    <span id="error-stats" style="color:red; display:block; font-size:0.8em; font-weight:bold;"></span>
                     <button type="submit" style="display:none;">Submit</button>
                 </form>
-
-                <div class="stats-container">
-                </div>
-
                 <button id="btn-ir-inicio" class="btn-juego">Empieza la lucha</button>
-
                 <div>
-                  <p id="tr" class="tr">500</p>  <img  id="bolsa" class="bolsa"  src="./img/monedero.png"> 
+                  <p id="tr" class="tr">500</p> <img id="bolsa" class="bolsa" src="./img/monedero.png"> 
                 </div>
             </div>
         </section>
@@ -56,7 +44,7 @@
             <div class="tarjeta-presentacion">
                 <h1>BIENVENIDO AL ANFITEATRO ROMANO</h1>
                 <div class="avatar-container">
-                    <img id="img-jugador-inicio" src="img/Gladiador.png" alt="Avatar Jugador">
+                    <img id="img-jugador-inicio-resumen" src="img/Gladiador.png" alt="Avatar Jugador">
                 </div>
                 <div class="stats-container">
                     <p>Nombre: <span id="nombre-jugador">Mérida</span></p>
@@ -76,9 +64,7 @@
                     Dinero: <span id="gasto-total">500</span> €
                 </div>
             </header>
-            
             <div id="contenedor-productos" class="grid-productos"></div>
-
             <footer class="mercado-footer">
                 <h3>Tu Inventario Actual</h3>
                 <div id="contenedor-inventario" class="grid-inventario"></div>
@@ -90,7 +76,7 @@
             <div class="tarjeta-presentacion">
                 <h2>¡Preparado para el combate!</h2>
                 <div class="avatar-container">
-                    <img src="img/Gladiador.png" alt="Jugador Listo">
+                    <img id="img-jugador-estado" src="img/Gladiador.png" alt="Jugador Listo">
                 </div>
                 <div class="stats-container">
                     <p>Ataque Total: <span id="stat-ataque-final">0</span></p>
@@ -110,24 +96,20 @@
         <section id="escena-batalla" class="escena oculta">
             <div class="area-combate">
                 <div class="luchador" id="luchador-jugador">
-                    <img src="img/Gladiador.png" alt="Jugador">
+                    <img id="img-batalla-jugador" src="img/Gladiador.png" alt="Jugador">
                     <div class="barra-vida"><div id="vida-bar-jugador" style="width: 100%"></div></div>
                     <p>Vida: <span id="batalla-vida-jugador">0</span></p>
                 </div>
-
                 <div class="vs-logo">VS</div>
-
                 <div class="luchador" id="luchador-enemigo">
                     <img id="img-enemigo-actual" src="" alt="Enemigo">
                     <div class="barra-vida"><div id="vida-bar-enemigo" style="width: 100%"></div></div>
                     <p>Vida: <span id="batalla-vida-enemigo">0</span></p>
                 </div>
             </div>
-
             <div class="registro-batalla">
                 <p id="mensaje-batalla">Turno 1: ¡Empieza la lucha!</p>
             </div>
-
             <button id="btn-siguiente-batalla" class="btn-juego oculta">Siguiente Enemigo</button>
         </section>
 
@@ -135,23 +117,20 @@
             <div class="tarjeta-resultado">
                 <h1>Fin de los Juegos</h1>
                 <h2 id="rango-final">Calculando...</h2>
-                <p>Puntuación Final: <span id="puntuacion-final">0</span></p>
+                <p>Puntos: <span id="resumen-puntos">0</span></p>
+                <p>Monedas: <span id="resumen-monedas">0</span></p>
+                <p style="font-weight:bold; font-size:1.2em; border-top:1px solid gold;">Total Final: <span id="puntuacion-final">0</span></p>
                 <button id="btn-ranking" class="btn-juego">Ir al Ranking</button>
             </div>
         </section>
-
+        
         <section id="escena-ranking" class="escena oculta">
             <div class="tarjeta-ranking">
-                <h1>BIENVENIDO AL Ranking</h1>
-                <div class="avatar-container"></div>
-                <table id="tabla-ranking-real">
-                    <tr><th>Nombre</th><th>Puntuación</th><th>Monedas</th></tr>
-                </table>
+                <h1>Ranking</h1>
+                <p style="color:white;">Revisa la consola (F12) para ver la tabla.</p>
                 <button id="btn-reiniciar" class="btn-juego">Reiniciar</button>
             </div>
         </section>
-
     </main>
-
 </body>
 </html>

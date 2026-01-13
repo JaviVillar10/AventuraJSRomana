@@ -47,7 +47,7 @@ export const LISTA_ENEMIGOS = [
     {
         nombre: "Espartaco (Rebelde)",
         imagen: "img/Esclavo_rebelde.png",
-        vida: 120,
+        vida: 90,
         ataque: 25, 
         esJefe: false
     },
@@ -55,14 +55,14 @@ export const LISTA_ENEMIGOS = [
         nombre: "Reciario Traidor",
         imagen: "img/Reciario.png",
         vida: 100,
-        ataque: 30, 
+        ataque: 25, 
         esJefe: false
     },
     {
         nombre: "Centurión Maldito",
         imagen: "img/Centurio_romano.png",
-        vida: 160,
-        ataque: 40, 
+        vida: 120,
+        ataque: 30, 
         esJefe: true, 
         multiplicador: 2.0
     }

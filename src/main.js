@@ -31,8 +31,8 @@ const init = () => {
         DATOS_JUGADOR.ataqueBase,
         DATOS_JUGADOR.defensaBase
     );
-
-    // EJERCICIO 2: Inicializamos el dinero en 500 (propiedad pedida en el PDF)
+    
+    // Ejercicio 2: Dinero inicial
     jugador.dinero = 500;
 
     enemigos = LISTA_ENEMIGOS.map(datos => {
@@ -76,78 +76,54 @@ const asignarEventosBotones = () => {
         location.reload();
     });
 
-
-    // --- LÓGICA DE VALIDACIÓN EXAMEN (EJERCICIO 1) ---
+    // --- BOTÓN EMPIEZA LA LUCHA (CON VALIDACIÓN EJERCICIO 1) ---
     document.getElementById('btn-ir-inicio').addEventListener('click', () => {
         const formulario = document.getElementById('crear-personaje');
-        const errNombre = document.getElementById('error-nombre');
-        const errStats = document.getElementById('error-stats');
+        const errNom = document.getElementById('error-nombre');
+        const errStat = document.getElementById('error-stats');
 
-        // 1. Limpiar mensajes de error previos
-        errNombre.textContent = "";
-        errStats.textContent = "";
+        errNom.textContent = "";
+        errStat.textContent = "";
 
-        // 2. Capturar valores
         const nombre = formulario.elements['nombre-jugador'].value.trim();
-        const atkStr = formulario.elements['ataque'].value;
-        const defStr = formulario.elements['defensa'].value;
-        const vidaStr = formulario.elements['vida'].value;
+        const atkVal = parseInt(formulario.elements['ataque'].value);
+        const defVal = parseInt(formulario.elements['defensa'].value);
+        const vidVal = parseInt(formulario.elements['vida'].value);
 
-        let hayError = false;
+        let errores = false;
 
-        // 3. Validar NOMBRE con REGEX (Mayúscula inicial, máx 20 caracteres)
         if (!REGEX.NOMBRE_GLADIADOR.test(nombre)) {
-            errNombre.textContent = "La primera letra debe ser Mayúscula (máx 20 carac).";
-            hayError = true;
+            errNom.textContent = "Primera letra Mayúscula (máx 20).";
+            errores = true;
         }
 
-        // 4. Validar que sean NÚMEROS ENTEROS
-        if (!REGEX.SOLO_NUMEROS.test(atkStr) || !REGEX.SOLO_NUMEROS.test(defStr) || !REGEX.SOLO_NUMEROS.test(vidaStr)) {
-            errStats.textContent = "Los valores deben ser números enteros positivos.";
-            hayError = true;
-        } else {
-            const atk = parseInt(atkStr);
-            const def = parseInt(defStr);
-            const vida = parseInt(vidaStr);
+        if (vidVal < 100) {
+            errStat.textContent = "Mínimo 100 de vida.";
+            errores = true;
+        } else if ((atkVal + defVal + vidVal) > 110) {
+            errStat.textContent = "Máximo 10 puntos a repartir.";
+            errores = true;
+        }
 
-            // 5. Validar Vida mínima 100
-            if (vida < 100) {
-                errStats.textContent = "La vida no puede ser inferior a 100 puntos.";
-                hayError = true;
-            }
-            // 6. Validar suma total máx 110 (100 base + 10 repartibles)
-            else if ((atk + def + vida) > 110) {
-                errStats.textContent = "Total excedido. Solo puedes repartir 10 puntos extra.";
-                hayError = true;
-            }
+        if (!errores) {
+            jugador.nombre = nombre;
+            jugador.ataqueBase = atkVal;
+            jugador.defensaBase = defVal;
+            jugador.vida = vidVal;
+            jugador.vidaMaxima = vidVal;
 
-            // SI TODO ES CORRECTO -> ACTUALIZAR JUGADOR Y AVANZAR
-            if (!hayError) {
-                jugador.nombre = nombre;
-                jugador.ataqueBase = atk;
-                jugador.defensaBase = def;
-                jugador.vida = vida;
-                jugador.vidaMaxima = vida;
-
-                document.getElementById('nombre-jugador').textContent = nombre;
-                document.getElementById('vida-jugador').textContent = vida;
-                document.getElementById('ataque-jugador').textContent = atk;
-                document.getElementById('defensa-jugador').textContent = def;
-
-                cambiarEscena('escena-inicio');
-            }
+            actualizarInfoJugadorInicio();
+            cambiarEscena('escena-inicio');
         }
     });
 
     document.getElementById('btn-ranking').addEventListener('click', () => {
         cambiarEscena('escena-ranking');
     });
-
 };
 
 /**
  * Controla la visibilidad de las escenas del juego.
- * Oculta todas las secciones y muestra únicamente la que coincide con el ID proporcionado.
  * @param {string} idEscena - El ID del elemento HTML de la escena a mostrar.
  */
 const cambiarEscena = (idEscena) => {
@@ -170,13 +146,14 @@ function actualizarInfoJugadorInicio() {
     document.getElementById('ataque-jugador').textContent = jugador.ataqueBase;
     document.getElementById('defensa-jugador').textContent = jugador.defensaBase;
     document.getElementById('img-jugador-inicio').src = jugador.imagen;
+    // Actualizar imágenes secundarias
+    const imgRes = document.getElementById('img-jugador-inicio-resumen');
+    if(imgRes) imgRes.src = jugador.imagen;
 }
 
-// --- ESCENA 2: MERCADO ---
+// --- ESCENA 2: MERCADO (CON EJERCICIO 2) ---
 const cargarMercado = () => {
-    // Sincronizamos el dinero del jugador con la interfaz
     document.getElementById('gasto-total').textContent = jugador.dinero;
-
     const contenedor = document.getElementById('contenedor-productos');
     contenedor.innerHTML = '';
 
@@ -221,8 +198,6 @@ const cargarMercado = () => {
     });
 };
 
-
-
 /**
  * Gestiona la lógica de compra y devolución de objetos.
  * Actualiza el inventario del jugador, el dinero gastado y la interfaz.
@@ -235,26 +210,21 @@ function gestionarCompra(producto, boton, tarjetaDiv) {
 
     if (index === -1) {
         if (jugador.dinero < producto.precio) {
-            alert("¡No tienes suficiente oro, gladiador!");
+            alert("No tienes dinero.");
             return;
         }
-
         jugador.agregarObjeto(producto);
         jugador.dinero -= producto.precio;
-        
         boton.textContent = "Retirar";
         boton.classList.add('btn-retirar');
         tarjetaDiv.style.backgroundColor = "#c8e6c9";
-
     } else {
         jugador.inventario.splice(index, 1);
         jugador.dinero += producto.precio;
-        
         if(producto.tipo === 'consumible') {
             jugador.vida -= producto.bonus;
             jugador.vidaMaxima -= producto.bonus;
         }
-     
         boton.textContent = "Comprar";
         boton.classList.remove('btn-retirar');
         tarjetaDiv.style.backgroundColor = "";
@@ -278,12 +248,13 @@ const renderizarInventarioUI = () => {
     });
 };
 
-
 // --- ESCENA 3: ESTADO FINAL ---
 const mostrarEstadoFinal = () => {
     document.getElementById('stat-ataque-final').textContent = jugador.obtenerAtaqueTotal();
     document.getElementById('stat-defensa-final').textContent = jugador.obtenerDefensaTotal();
     document.getElementById('stat-vida-final').textContent = jugador.vida;
+    const imgEst = document.getElementById('img-jugador-estado');
+    if(imgEst) imgEst.src = jugador.imagen;
 };
 
 // --- ESCENA 4: GALERÍA ---
@@ -313,9 +284,11 @@ const iniciarSistemaBatallas = () => {
 
 const prepararBatalla = () => {
     const enemigo = enemigos[enemigoActualIndex];
+    // ASIGNACIÓN DE IMÁGENES SEGURA
     document.getElementById('img-enemigo-actual').src = enemigo.imagen;
+    document.getElementById('img-batalla-jugador').src = jugador.imagen;
+    
     actualizarBarrasVida(enemigo);
-
     document.getElementById('mensaje-batalla').textContent = `¡Aparece un ${enemigo.nombre}!`;
     document.getElementById('mensaje-batalla').style.color = 'black';
     document.getElementById('btn-siguiente-batalla').classList.add('oculta');
@@ -335,6 +308,7 @@ const prepararBatalla = () => {
 
 /**
  * Bucle principal de combate asíncrono.
+ * @param {Enemigo} enemigo - El oponente actual.
  */
 async function combate(enemigo) {
     while (jugador.estaVivo() && enemigo.estaVivo()) {
@@ -350,11 +324,9 @@ async function combate(enemigo) {
         if (dañoRecibido < 0) dañoRecibido = 0;
         jugador.recibirDaño(dañoRecibido);
         document.getElementById('mensaje-batalla').textContent = `${enemigo.nombre} te ataca: ${dañoRecibido} daño.`;
-        document.getElementById('mensaje-batalla').style.color = 'red';
         actualizarBarrasVida(enemigo);
         if (!jugador.estaVivo()) break;
         await esperar(1500);
-        document.getElementById('mensaje-batalla').style.color = 'black';
     }
     resolverResultadoCombate(enemigo);
 }
@@ -363,29 +335,31 @@ const actualizarBarrasVida = (enemigo) => {
     const porcJ = (jugador.vida / jugador.vidaMaxima) * 100;
     document.getElementById('vida-bar-jugador').style.width = `${Math.max(0, porcJ)}%`;
     document.getElementById('batalla-vida-jugador').textContent = jugador.vida;
-
     const porcE = (enemigo.vida / enemigo.vidaMaxima) * 100;
     document.getElementById('vida-bar-enemigo').style.width = `${Math.max(0, porcE)}%`; 
     document.getElementById('batalla-vida-enemigo').textContent = enemigo.vida;
 };
 
+/**
+ * Evalúa el resultado final del combate (CON PREMIOS EJERCICIO 3).
+ * @param {Enemigo} enemigo - El enemigo contra el que se ha luchado.
+ */
 const resolverResultadoCombate = (enemigo) => {
     if (jugador.estaVivo()) {
-        let puntosGanados = 100 + enemigo.ataque;
-        if (enemigo instanceof Jefe) {
-            puntosGanados = Math.floor(puntosGanados * enemigo.multiplicador);
-            document.getElementById('mensaje-batalla').textContent = `¡HAS DERROTADO AL JEFE! +${puntosGanados} puntos.`;
-        } else {
-            document.getElementById('mensaje-batalla').textContent = `¡Victoria! +${puntosGanados} puntos.`;
-        }
-        document.getElementById('mensaje-batalla').style.color = 'green';
-        jugador.sumarPuntos(puntosGanados);
+        let ptsGanados = 100 + enemigo.ataque;
+        let monGanadas = (enemigo instanceof Jefe) ? 10 : 5;
+        
+        jugador.dinero += monGanadas;
+        jugador.sumarPuntos(ptsGanados);
 
-        const btnSiguiente = document.getElementById('btn-siguiente-batalla');
-        btnSiguiente.classList.remove('oculta');
-        if (enemigoActualIndex === enemigos.length - 1) btnSiguiente.textContent = "Ver Resultados Finales";
+        document.getElementById('mensaje-batalla').innerHTML = `¡Victoria! +${ptsGanados} pts <br> <span style="color: gold; font-weight: bold;">+${monGanadas} monedas 🪙</span>`;
+        document.getElementById('mensaje-batalla').style.color = 'green';
+
+        const btnSig = document.getElementById('btn-siguiente-batalla');
+        btnSig.classList.remove('oculta');
+        if (enemigoActualIndex === enemigos.length - 1) btnSig.textContent = "Ver Resultados Finales";
     } else {
-        document.getElementById('mensaje-batalla').textContent = "Has caído en la arena... Honor y Gloria.";
+        document.getElementById('mensaje-batalla').textContent = "Has caído.";
         setTimeout(() => {
             mostrarPantallaFinal();
             cambiarEscena('escena-fin');
@@ -403,25 +377,28 @@ const siguienteRonda = () => {
     }
 };
 
-// --- ESCENA 6 ---
+/**
+ * Muestra la pantalla final (CON DESGLOSE EJERCICIO 3).
+ */
 const mostrarPantallaFinal = () => {
     const rangoH2 = document.getElementById('rango-final');
-    const puntosSpan = document.getElementById('puntuacion-final');
-    puntosSpan.textContent = jugador.puntos;
+    const totalFinal = jugador.puntos + jugador.dinero;
 
-    if (jugador.puntos >= PUNTOS_PARA_VETERANO) {
+    document.getElementById('resumen-puntos').textContent = jugador.puntos;
+    document.getElementById('resumen-monedas').textContent = jugador.dinero;
+    document.getElementById('puntuacion-final').textContent = totalFinal;
+
+    if (totalFinal >= PUNTOS_PARA_VETERANO) {
         rangoH2.textContent = "¡VETERANO DE LA ARENA!";
-        rangoH2.style.color = "gold";
         lanzarConfeti();
     } else {
-        rangoH2.textContent = "Novato... Sigue entrenando.";
-        rangoH2.style.color = "gray";
+        rangoH2.textContent = "Novato...";
     }
 };
 
 function lanzarConfeti() {
     if (window.confetti) {
-        window.confetti({ particleCount: 150, spread: 70, origin: { y: 0.6 }, colors: ['#daa520', '#b71c1c', '#ffffff'] });
+        window.confetti({ particleCount: 150, spread: 70, origin: { y: 0.6 } });
     }
 }
 
