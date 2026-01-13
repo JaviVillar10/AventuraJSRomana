@@ -61,7 +61,7 @@ export const LISTA_ENEMIGOS = [
     {
         nombre: "Centurión Maldito",
         imagen: "img/Centurio_romano.png",
-        vida: 200,
+        vida: 160,
         ataque: 40, 
         esJefe: true, 
         multiplicador: 2.0
@@ -136,3 +136,14 @@ export const MERCADO_PRODUCTOS = [
  * @constant {number}
  */
 export const PUNTOS_PARA_VETERANO = 500;
+
+
+export const REGEX = {
+    // 1. Empieza por Mayúscula: [A-ZÁÉÍÓÚÑ]
+    // 2. Letras y espacios: [a-zA-ZÁÉÍÓÚáéíóúñÑ\s]
+    // 3. Máximo 20 caracteres: {0,19} (ya que el primero ya cuenta)
+    NOMBRE_GLADIADOR: /^[A-ZÁÉÍÓÚÑ][a-zA-ZÁÉÍÓÚáéíóúñÑ\s]{0,19}$/,
+    
+    // Validar que solo sean números enteros positivos
+    SOLO_NUMEROS: /^\d+$/
+};

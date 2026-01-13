@@ -24,18 +24,21 @@
                 <form id="crear-personaje">
                 
                     <label for="nombre">Nombre:</label>
-                    <input type="text" name="nombre-jugador" >
+                    <input type="text" name="nombre-jugador" id="nombre-input">
+                    <span id="error-nombre" style="color: #ff4d4d; font-size: 0.85em; display: block; min-height: 1.2em; font-weight: bold;"></span>
 
                     <label for="ataque">Ataque:</label>
-                    <input type="number" name="ataque">
+                    <input type="number" name="ataque" value="0">
 
-                    <label for="nombre">Defensa:</label>
-                    <input type="number" name="defensa">
+                    <label for="defensa">Defensa:</label>
+                    <input type="number" name="defensa" value="0">
 
-                    <label for="nombre">Vida:</label>
-                    <input type="number" name="vida">
+                    <label for="vida">Vida:</label>
+                    <input type="number" name="vida" value="100">
 
-                <button type="submit">Introducir datos del personaje</button>
+                    <span id="error-stats" style="color: #ff4d4d; font-size: 0.85em; display: block; min-height: 1.2em; font-weight: bold; margin-top: 5px;"></span>
+
+                    <button type="submit" style="display:none;">Submit</button>
                 </form>
 
                 <div class="stats-container">
@@ -43,12 +46,11 @@
 
                 <button id="btn-ir-inicio" class="btn-juego">Empieza la lucha</button>
 
-           <div>
-              <p id="tr" class="tr">500</p>  <img  id="bolsa" class="bolsa"  src="./img/monedero.png"> 
+                <div>
+                  <p id="tr" class="tr">500</p>  <img  id="bolsa" class="bolsa"  src="./img/monedero.png"> 
+                </div>
             </div>
         </section>
-
-
 
         <section id="escena-inicio" class="escena oculta">
             <div class="tarjeta-presentacion">
@@ -138,56 +140,16 @@
             </div>
         </section>
 
-     <section id="escena-ranking" class="escena oculta">
+        <section id="escena-ranking" class="escena oculta">
             <div class="tarjeta-ranking">
                 <h1>BIENVENIDO AL Ranking</h1>
-                <div class="avatar-container">
-                    
-                </div>
-               
-                <table>
-                    <th>Nombre</th>
-                    <td>Apuleyo Diocles</td>
-
-                    <th>Puntuación</th>
-                    <td>678</td>
-
-                    <th>Monedas Totales</th>
-                    <td>56</td>
-
+                <div class="avatar-container"></div>
+                <table id="tabla-ranking-real">
+                    <tr><th>Nombre</th><th>Puntuación</th><th>Monedas</th></tr>
                 </table>
-
-                <table>
-                    <th>Nombre</th>
-                    <td>Romeus</td>
-
-                    <th>Puntuación</th>
-                    <td>234</td>
-
-                    <th>Monedas Totales</th>
-                    <td>22</td>
-
-                </table>
-
-                   <table>
-                    <th>Nombre</th>
-                    <td>Apolo</td>
-
-                    <th>Puntuación</th>
-                    <td>980</td>
-
-                    <th>Monedas Totales</th>
-                    <td>235</td>
-
-                </table>
-
-
                 <button id="btn-reiniciar" class="btn-juego">Reiniciar</button>
             </div>
         </section>
-
-
-
 
     </main>
 

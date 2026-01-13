@@ -1,6 +1,6 @@
 /* src/main.js */
 
-import { DATOS_JUGADOR, LISTA_ENEMIGOS, MERCADO_PRODUCTOS, PUNTOS_PARA_VETERANO } from './constants.js';
+import { DATOS_JUGADOR, LISTA_ENEMIGOS, MERCADO_PRODUCTOS, PUNTOS_PARA_VETERANO, REGEX } from './constants.js';
 import { formatearPrecio, obtenerAleatorio, esperar } from './utils.js';
 import { Jugador } from './classes/Jugador.js';
 import { Enemigo, Jefe } from './classes/Enemigo.js';
@@ -16,7 +16,6 @@ import { Producto } from './classes/Producto.js';
 let jugador;
 let enemigos = [];
 let enemigoActualIndex = 0;
-let gastoTotal = 500;
 
 
 /**
@@ -32,6 +31,9 @@ const init = () => {
         DATOS_JUGADOR.ataqueBase,
         DATOS_JUGADOR.defensaBase
     );
+
+    // EJERCICIO 2: Inicializamos el dinero en 500 (propiedad pedida en el PDF)
+    jugador.dinero = 500;
 
     enemigos = LISTA_ENEMIGOS.map(datos => {
         if (datos.esJefe) {
@@ -75,12 +77,69 @@ const asignarEventosBotones = () => {
     });
 
 
-
+    // --- LÓGICA DE VALIDACIÓN EXAMEN (EJERCICIO 1) ---
     document.getElementById('btn-ir-inicio').addEventListener('click', () => {
-        cambiarEscena('escena-inicio');
+        const formulario = document.getElementById('crear-personaje');
+        const errNombre = document.getElementById('error-nombre');
+        const errStats = document.getElementById('error-stats');
+
+        // 1. Limpiar mensajes de error previos
+        errNombre.textContent = "";
+        errStats.textContent = "";
+
+        // 2. Capturar valores
+        const nombre = formulario.elements['nombre-jugador'].value.trim();
+        const atkStr = formulario.elements['ataque'].value;
+        const defStr = formulario.elements['defensa'].value;
+        const vidaStr = formulario.elements['vida'].value;
+
+        let hayError = false;
+
+        // 3. Validar NOMBRE con REGEX (Mayúscula inicial, máx 20 caracteres)
+        if (!REGEX.NOMBRE_GLADIADOR.test(nombre)) {
+            errNombre.textContent = "La primera letra debe ser Mayúscula (máx 20 carac).";
+            hayError = true;
+        }
+
+        // 4. Validar que sean NÚMEROS ENTEROS
+        if (!REGEX.SOLO_NUMEROS.test(atkStr) || !REGEX.SOLO_NUMEROS.test(defStr) || !REGEX.SOLO_NUMEROS.test(vidaStr)) {
+            errStats.textContent = "Los valores deben ser números enteros positivos.";
+            hayError = true;
+        } else {
+            const atk = parseInt(atkStr);
+            const def = parseInt(defStr);
+            const vida = parseInt(vidaStr);
+
+            // 5. Validar Vida mínima 100
+            if (vida < 100) {
+                errStats.textContent = "La vida no puede ser inferior a 100 puntos.";
+                hayError = true;
+            }
+            // 6. Validar suma total máx 110 (100 base + 10 repartibles)
+            else if ((atk + def + vida) > 110) {
+                errStats.textContent = "Total excedido. Solo puedes repartir 10 puntos extra.";
+                hayError = true;
+            }
+
+            // SI TODO ES CORRECTO -> ACTUALIZAR JUGADOR Y AVANZAR
+            if (!hayError) {
+                jugador.nombre = nombre;
+                jugador.ataqueBase = atk;
+                jugador.defensaBase = def;
+                jugador.vida = vida;
+                jugador.vidaMaxima = vida;
+
+                document.getElementById('nombre-jugador').textContent = nombre;
+                document.getElementById('vida-jugador').textContent = vida;
+                document.getElementById('ataque-jugador').textContent = atk;
+                document.getElementById('defensa-jugador').textContent = def;
+
+                cambiarEscena('escena-inicio');
+            }
+        }
     });
 
- document.getElementById('btn-ranking').addEventListener('click', () => {
+    document.getElementById('btn-ranking').addEventListener('click', () => {
         cambiarEscena('escena-ranking');
     });
 
@@ -91,7 +150,6 @@ const asignarEventosBotones = () => {
  * Oculta todas las secciones y muestra únicamente la que coincide con el ID proporcionado.
  * @param {string} idEscena - El ID del elemento HTML de la escena a mostrar.
  */
-
 const cambiarEscena = (idEscena) => {
     const escenas = document.querySelectorAll('.escena');
     escenas.forEach(escena => {
@@ -116,6 +174,9 @@ function actualizarInfoJugadorInicio() {
 
 // --- ESCENA 2: MERCADO ---
 const cargarMercado = () => {
+    // Sincronizamos el dinero del jugador con la interfaz
+    document.getElementById('gasto-total').textContent = jugador.dinero;
+
     const contenedor = document.getElementById('contenedor-productos');
     contenedor.innerHTML = '';
 
@@ -172,35 +233,34 @@ const cargarMercado = () => {
 function gestionarCompra(producto, boton, tarjetaDiv) {
     const index = jugador.inventario.findIndex(p => p.nombre === producto.nombre);
 
-//////////////////////////////////////////////////////////////////////////////////////////////////////////
-     if (gastoTotal < producto.precio){ boton.classList.replace('btn-comprar');}
-     
-////////////////////////////////////////////////////////////////////////////////////////////////////////
     if (index === -1) {
+        if (jugador.dinero < producto.precio) {
+            alert("¡No tienes suficiente oro, gladiador!");
+            return;
+        }
+
         jugador.agregarObjeto(producto);
-        gastoTotal -= producto.precio; //ACABO DE PONER -= ANTES +=
+        jugador.dinero -= producto.precio;
+        
         boton.textContent = "Retirar";
         boton.classList.add('btn-retirar');
         tarjetaDiv.style.backgroundColor = "#c8e6c9";
 
-        
     } else {
         jugador.inventario.splice(index, 1);
-        gastoTotal -= producto.precio;
+        jugador.dinero += producto.precio;
         
         if(producto.tipo === 'consumible') {
             jugador.vida -= producto.bonus;
             jugador.vidaMaxima -= producto.bonus;
         }
-       
-       
      
         boton.textContent = "Comprar";
         boton.classList.remove('btn-retirar');
         tarjetaDiv.style.backgroundColor = "";
     }
 
-    document.getElementById('gasto-total').textContent = gastoTotal;
+    document.getElementById('gasto-total').textContent = jugador.dinero;
     renderizarInventarioUI();
 }
 
@@ -254,121 +314,76 @@ const iniciarSistemaBatallas = () => {
 const prepararBatalla = () => {
     const enemigo = enemigos[enemigoActualIndex];
     document.getElementById('img-enemigo-actual').src = enemigo.imagen;
-    gastoTotal + 5;
     actualizarBarrasVida(enemigo);
 
     document.getElementById('mensaje-batalla').textContent = `¡Aparece un ${enemigo.nombre}!`;
     document.getElementById('mensaje-batalla').style.color = 'black';
     document.getElementById('btn-siguiente-batalla').classList.add('oculta');
 
-    // Animación de entrada 
     const arena = document.querySelector('.area-combate');
     const luchadores = document.querySelectorAll('.luchador');
 
-    // 1. Resetear
     arena.classList.remove('start-anim');
     luchadores.forEach(l => l.style.transition = 'none');
 
-    // 2. Activar
     setTimeout(() => {
         luchadores.forEach(l => l.style.transition = '');
         arena.classList.add('start-anim');
-        
-        // Empezar turnos
-        setTimeout(() => {
-            combate(enemigo);
-        }, 1000);
+        setTimeout(() => combate(enemigo), 1000);
     }, 50);
 };
 
 /**
  * Bucle principal de combate asíncrono.
- * Gestiona los turnos, cálculo de daño y actualización de la interfaz hasta que uno muera.
- * @param {Enemigo} enemigo - El oponente actual.
  */
-
 async function combate(enemigo) {
-    // Espera inicial gestionada por el timeout de arriba
-
     while (jugador.estaVivo() && enemigo.estaVivo()) {
         const ataqueJ = jugador.obtenerAtaqueTotal();
         enemigo.recibirDaño(ataqueJ);
-        
-        document.getElementById('mensaje-batalla').textContent = 
-            `Atacas a ${enemigo.nombre}: ${ataqueJ} daño.`;
-        
+        document.getElementById('mensaje-batalla').textContent = `Atacas a ${enemigo.nombre}: ${ataqueJ} daño.`;
         actualizarBarrasVida(enemigo);
-        
         if (!enemigo.estaVivo()) break;
-        
         await esperar(1500);
 
         const defensaJ = jugador.obtenerDefensaTotal();
         let dañoRecibido = enemigo.ataque - defensaJ;
         if (dañoRecibido < 0) dañoRecibido = 0;
-
         jugador.recibirDaño(dañoRecibido);
-
-        document.getElementById('mensaje-batalla').textContent = 
-            `${enemigo.nombre} te ataca: ${dañoRecibido} daño.`;
+        document.getElementById('mensaje-batalla').textContent = `${enemigo.nombre} te ataca: ${dañoRecibido} daño.`;
         document.getElementById('mensaje-batalla').style.color = 'red';
-
         actualizarBarrasVida(enemigo);
-
         if (!jugador.estaVivo()) break;
-
         await esperar(1500);
         document.getElementById('mensaje-batalla').style.color = 'black';
     }
-
     resolverResultadoCombate(enemigo);
 }
 
-/**
- * Actualiza el ancho de las barras de vida en el DOM según la vida actual/máxima.
- * @param {Enemigo} enemigo - El enemigo actual para calcular su barra.
- */
-
 const actualizarBarrasVida = (enemigo) => {
-    const vidaMaxJ = jugador.vidaMaxima;
-    const porcentajeJ = (jugador.vida / vidaMaxJ) * 100;
-    document.getElementById('vida-bar-jugador').style.width = `${Math.max(0, porcentajeJ)}%`;
+    const porcJ = (jugador.vida / jugador.vidaMaxima) * 100;
+    document.getElementById('vida-bar-jugador').style.width = `${Math.max(0, porcJ)}%`;
     document.getElementById('batalla-vida-jugador').textContent = jugador.vida;
 
-    const vidaMaxE = enemigo.vidaMaxima; 
-    const porcentajeE = (enemigo.vida / vidaMaxE) * 100;
-    document.getElementById('vida-bar-enemigo').style.width = `${Math.max(0, porcentajeE)}%`; 
+    const porcE = (enemigo.vida / enemigo.vidaMaxima) * 100;
+    document.getElementById('vida-bar-enemigo').style.width = `${Math.max(0, porcE)}%`; 
     document.getElementById('batalla-vida-enemigo').textContent = enemigo.vida;
 };
-
-/**
- * Evalúa el resultado final del combate (Victoria o Derrota).
- * Asigna puntos y gestiona la transición a la siguiente ronda o pantalla final.
- * @param {Enemigo} enemigo - El enemigo contra el que se ha luchado.
- */
 
 const resolverResultadoCombate = (enemigo) => {
     if (jugador.estaVivo()) {
         let puntosGanados = 100 + enemigo.ataque;
         if (enemigo instanceof Jefe) {
             puntosGanados = Math.floor(puntosGanados * enemigo.multiplicador);
-            document.getElementById('mensaje-batalla').textContent = `¡HAS DERROTADO AL JEFE! +${puntosGanados}puntos  ${gastoTotal = +10} monedas.`;
+            document.getElementById('mensaje-batalla').textContent = `¡HAS DERROTADO AL JEFE! +${puntosGanados} puntos.`;
         } else {
-            document.getElementById('mensaje-batalla').textContent = `¡Victoria! +${puntosGanados}puntos  ${gastoTotal = +5} monedas .`;
+            document.getElementById('mensaje-batalla').textContent = `¡Victoria! +${puntosGanados} puntos.`;
         }
-        
         document.getElementById('mensaje-batalla').style.color = 'green';
         jugador.sumarPuntos(puntosGanados);
 
-        
-
         const btnSiguiente = document.getElementById('btn-siguiente-batalla');
         btnSiguiente.classList.remove('oculta');
-        
-        if (enemigoActualIndex === enemigos.length - 1) {
-            btnSiguiente.textContent = "Ver Resultados Finales";
-        }
-
+        if (enemigoActualIndex === enemigos.length - 1) btnSiguiente.textContent = "Ver Resultados Finales";
     } else {
         document.getElementById('mensaje-batalla').textContent = "Has caído en la arena... Honor y Gloria.";
         setTimeout(() => {
@@ -392,10 +407,7 @@ const siguienteRonda = () => {
 const mostrarPantallaFinal = () => {
     const rangoH2 = document.getElementById('rango-final');
     const puntosSpan = document.getElementById('puntuacion-final');
-    
-
     puntosSpan.textContent = jugador.puntos;
-    
 
     if (jugador.puntos >= PUNTOS_PARA_VETERANO) {
         rangoH2.textContent = "¡VETERANO DE LA ARENA!";
@@ -409,12 +421,7 @@ const mostrarPantallaFinal = () => {
 
 function lanzarConfeti() {
     if (window.confetti) {
-        window.confetti({
-            particleCount: 150,
-            spread: 70,
-            origin: { y: 0.6 },
-            colors: ['#daa520', '#b71c1c', '#ffffff']
-        });
+        window.confetti({ particleCount: 150, spread: 70, origin: { y: 0.6 }, colors: ['#daa520', '#b71c1c', '#ffffff'] });
     }
 }
 

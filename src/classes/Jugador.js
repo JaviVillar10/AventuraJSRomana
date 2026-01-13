@@ -23,6 +23,7 @@ export class Jugador extends Personaje {
         this.defensaBase = defensaBase;
         this.puntos = 0;
         this.inventario = [];
+        this.dinero = 500;
     }
 
 
