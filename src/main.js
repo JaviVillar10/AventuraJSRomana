@@ -79,6 +79,11 @@ const asignarEventosBotones = () => {
     document.getElementById('btn-ir-inicio').addEventListener('click', () => {
         cambiarEscena('escena-inicio');
     });
+
+ document.getElementById('btn-ranking').addEventListener('click', () => {
+        cambiarEscena('escena-ranking');
+    });
+
 };
 
 /**
@@ -212,6 +217,7 @@ const renderizarInventarioUI = () => {
         contInv.appendChild(img);
     });
 };
+
 
 // --- ESCENA 3: ESTADO FINAL ---
 const mostrarEstadoFinal = () => {
