@@ -32,7 +32,7 @@ const init = () => {
         DATOS_JUGADOR.defensaBase
     );
     
-    // Ejercicio 2: Dinero inicial
+    //  Dinero inicial
     jugador.dinero = 500;
 
     enemigos = LISTA_ENEMIGOS.map(datos => {
@@ -76,7 +76,7 @@ const asignarEventosBotones = () => {
         location.reload();
     });
 
-    // --- BOTÓN EMPIEZA LA LUCHA (CON VALIDACIÓN EJERCICIO 1) ---
+    // --- LÓGICA DE VALIDACIÓN  ---
     document.getElementById('btn-ir-inicio').addEventListener('click', () => {
         const formulario = document.getElementById('crear-personaje');
         const errNom = document.getElementById('error-nombre');
@@ -93,15 +93,15 @@ const asignarEventosBotones = () => {
         let errores = false;
 
         if (!REGEX.NOMBRE_GLADIADOR.test(nombre)) {
-            errNom.textContent = "Primera letra Mayúscula (máx 20).";
+            errNom.textContent = "La primera letra debe ser Mayúscula (máx 20 carac).";
             errores = true;
         }
 
         if (vidVal < 100) {
-            errStat.textContent = "Mínimo 100 de vida.";
+            errStat.textContent = "La vida no puede ser inferior a 100 puntos.";
             errores = true;
         } else if ((atkVal + defVal + vidVal) > 110) {
-            errStat.textContent = "Máximo 10 puntos a repartir.";
+            errStat.textContent = "Total excedido. Solo puedes repartir 10 puntos extra.";
             errores = true;
         }
 
@@ -117,13 +117,23 @@ const asignarEventosBotones = () => {
         }
     });
 
-    document.getElementById('btn-ranking').addEventListener('click', () => {
+    // --- EVENTOS DE RANKING (EJERCICIO 4) ---
+    document.getElementById('btn-ir-ranking-escena').addEventListener('click', () => {
+        mostrarRankingEnPantalla();
         cambiarEscena('escena-ranking');
+    });
+
+    document.getElementById('btn-mostrar-terminal').addEventListener('click', () => {
+        const ranking = JSON.parse(localStorage.getItem('ranking_gladiadores')) || [];
+        ranking.sort((a, b) => b.puntuacionTotal - a.puntuacionTotal);
+        console.log("%c--- RANKING DE GLADIADORES (TERMINAL) ---", "color: gold; font-weight: bold; font-size: 14px;");
+        console.table(ranking);
     });
 };
 
 /**
  * Controla la visibilidad de las escenas del juego.
+ * Oculta todas las secciones y muestra únicamente la que coincide con el ID proporcionado.
  * @param {string} idEscena - El ID del elemento HTML de la escena a mostrar.
  */
 const cambiarEscena = (idEscena) => {
@@ -146,12 +156,11 @@ function actualizarInfoJugadorInicio() {
     document.getElementById('ataque-jugador').textContent = jugador.ataqueBase;
     document.getElementById('defensa-jugador').textContent = jugador.defensaBase;
     document.getElementById('img-jugador-inicio').src = jugador.imagen;
-    // Actualizar imágenes secundarias
     const imgRes = document.getElementById('img-jugador-inicio-resumen');
     if(imgRes) imgRes.src = jugador.imagen;
 }
 
-// --- ESCENA 2: MERCADO (CON EJERCICIO 2) ---
+// --- ESCENA 2: MERCADO ---
 const cargarMercado = () => {
     document.getElementById('gasto-total').textContent = jugador.dinero;
     const contenedor = document.getElementById('contenedor-productos');
@@ -210,7 +219,7 @@ function gestionarCompra(producto, boton, tarjetaDiv) {
 
     if (index === -1) {
         if (jugador.dinero < producto.precio) {
-            alert("No tienes dinero.");
+            alert("No tienes suficiente oro.");
             return;
         }
         jugador.agregarObjeto(producto);
@@ -237,7 +246,6 @@ function gestionarCompra(producto, boton, tarjetaDiv) {
 const renderizarInventarioUI = () => {
     const contInv = document.getElementById('contenedor-inventario');
     contInv.innerHTML = '';
-
     jugador.inventario.forEach(item => {
         const img = document.createElement('img');
         img.src = item.imagen;
@@ -261,7 +269,6 @@ const mostrarEstadoFinal = () => {
 const mostrarGaleriaEnemigos = () => {
     const lista = document.getElementById('lista-enemigos');
     lista.innerHTML = '';
-
     enemigos.forEach(enemigo => {
         const ficha = document.createElement('div');
         ficha.className = 'ficha-producto';
@@ -284,7 +291,7 @@ const iniciarSistemaBatallas = () => {
 
 const prepararBatalla = () => {
     const enemigo = enemigos[enemigoActualIndex];
-    // ASIGNACIÓN DE IMÁGENES SEGURA
+    // --- ASIGNACIÓN DE IMÁGENES ---
     document.getElementById('img-enemigo-actual').src = enemigo.imagen;
     document.getElementById('img-batalla-jugador').src = jugador.imagen;
     
@@ -293,12 +300,11 @@ const prepararBatalla = () => {
     document.getElementById('mensaje-batalla').style.color = 'black';
     document.getElementById('btn-siguiente-batalla').classList.add('oculta');
 
+    // Animación de entrada
     const arena = document.querySelector('.area-combate');
     const luchadores = document.querySelectorAll('.luchador');
-
     arena.classList.remove('start-anim');
     luchadores.forEach(l => l.style.transition = 'none');
-
     setTimeout(() => {
         luchadores.forEach(l => l.style.transition = '');
         arena.classList.add('start-anim');
@@ -324,9 +330,11 @@ async function combate(enemigo) {
         if (dañoRecibido < 0) dañoRecibido = 0;
         jugador.recibirDaño(dañoRecibido);
         document.getElementById('mensaje-batalla').textContent = `${enemigo.nombre} te ataca: ${dañoRecibido} daño.`;
+        document.getElementById('mensaje-batalla').style.color = 'red';
         actualizarBarrasVida(enemigo);
         if (!jugador.estaVivo()) break;
         await esperar(1500);
+        document.getElementById('mensaje-batalla').style.color = 'black';
     }
     resolverResultadoCombate(enemigo);
 }
@@ -346,20 +354,20 @@ const actualizarBarrasVida = (enemigo) => {
  */
 const resolverResultadoCombate = (enemigo) => {
     if (jugador.estaVivo()) {
-        let ptsGanados = 100 + enemigo.ataque;
-        let monGanadas = (enemigo instanceof Jefe) ? 10 : 5;
+        let ptsG = 100 + enemigo.ataque;
+        let monG = (enemigo instanceof Jefe) ? 10 : 5;
         
-        jugador.dinero += monGanadas;
-        jugador.sumarPuntos(ptsGanados);
+        jugador.dinero += monG;
+        jugador.sumarPuntos(ptsG);
 
-        document.getElementById('mensaje-batalla').innerHTML = `¡Victoria! +${ptsGanados} pts <br> <span style="color: gold; font-weight: bold;">+${monGanadas} monedas 🪙</span>`;
+        document.getElementById('mensaje-batalla').innerHTML = `¡Victoria! +${ptsG} pts <br> <span style="color: gold; font-weight: bold;">+${monG} monedas 🪙</span>`;
         document.getElementById('mensaje-batalla').style.color = 'green';
 
         const btnSig = document.getElementById('btn-siguiente-batalla');
         btnSig.classList.remove('oculta');
         if (enemigoActualIndex === enemigos.length - 1) btnSig.textContent = "Ver Resultados Finales";
     } else {
-        document.getElementById('mensaje-batalla').textContent = "Has caído.";
+        document.getElementById('mensaje-batalla').textContent = "Has caído en la arena... Honor y Gloria.";
         setTimeout(() => {
             mostrarPantallaFinal();
             cambiarEscena('escena-fin');
@@ -378,7 +386,7 @@ const siguienteRonda = () => {
 };
 
 /**
- * Muestra la pantalla final (CON DESGLOSE EJERCICIO 3).
+ * Muestra la pantalla final.
  */
 const mostrarPantallaFinal = () => {
     const rangoH2 = document.getElementById('rango-final');
@@ -388,17 +396,50 @@ const mostrarPantallaFinal = () => {
     document.getElementById('resumen-monedas').textContent = jugador.dinero;
     document.getElementById('puntuacion-final').textContent = totalFinal;
 
+    // --- GUARDADO LOCALSTORAGE ---
+    const registro = {
+        gladiador: jugador.nombre,
+        puntosBatalla: jugador.puntos,
+        monedasRestantes: jugador.dinero,
+        puntuacionTotal: totalFinal
+    };
+    let ranking = JSON.parse(localStorage.getItem('ranking_gladiadores')) || [];
+    ranking.push(registro);
+    localStorage.setItem('ranking_gladiadores', JSON.stringify(ranking));
+
     if (totalFinal >= PUNTOS_PARA_VETERANO) {
         rangoH2.textContent = "¡VETERANO DE LA ARENA!";
         lanzarConfeti();
     } else {
-        rangoH2.textContent = "Novato...";
+        rangoH2.textContent = "Novato... Sigue entrenando.";
     }
+};
+
+/**
+ * Renderiza la tabla del Ranking en el HTML 
+ */
+const mostrarRankingEnPantalla = () => {
+    const ranking = JSON.parse(localStorage.getItem('ranking_gladiadores')) || [];
+    ranking.sort((a, b) => b.puntuacionTotal - a.puntuacionTotal);
+    const cuerpo = document.getElementById('cuerpo-ranking');
+    cuerpo.innerHTML = '';
+
+    ranking.forEach(item => {
+        const fila = document.createElement('tr');
+        fila.style.borderBottom = "1px solid #555";
+        fila.innerHTML = `
+            <td style="padding:8px;">${item.gladiador}</td>
+            <td style="text-align:center;">${item.puntosBatalla}</td>
+            <td style="text-align:center;">${item.monedasRestantes}</td>
+            <td style="text-align:center; font-weight:bold; color:gold;">${item.puntuacionTotal}</td>
+        `;
+        cuerpo.appendChild(fila);
+    });
 };
 
 function lanzarConfeti() {
     if (window.confetti) {
-        window.confetti({ particleCount: 150, spread: 70, origin: { y: 0.6 } });
+        window.confetti({ particleCount: 150, spread: 70, origin: { y: 0.6 }, colors: ['#daa520', '#b71c1c', '#ffffff'] });
     }
 }
 
