@@ -32,7 +32,7 @@ const init = () => {
         DATOS_JUGADOR.defensaBase
     );
     
-    // Dinero inicial
+    //  dinero
     jugador.dinero = 500;
 
     enemigos = LISTA_ENEMIGOS.map(datos => {
@@ -76,7 +76,7 @@ const asignarEventosBotones = () => {
         location.reload();
     });
 
-    // --- LÓGICA DE VALIDACIÓN EXAMEN (EJERCICIO 1) ---
+    // --- LÓGICA DE VALIDACIÓN ---
     document.getElementById('btn-ir-inicio').addEventListener('click', () => {
         const formulario = document.getElementById('crear-personaje');
         const errNom = document.getElementById('error-nombre');
@@ -363,6 +363,9 @@ const resolverResultadoCombate = (enemigo) => {
         document.getElementById('mensaje-batalla').innerHTML = `¡Victoria! +${ptsG} pts <br> <span style="color: gold; font-weight: bold;">+${monG} monedas 🪙</span>`;
         document.getElementById('mensaje-batalla').style.color = 'green';
 
+        // --- MONEDAS  ---
+        lanzarAnimacionMonedas();
+
         const btnSig = document.getElementById('btn-siguiente-batalla');
         btnSig.classList.remove('oculta');
         if (enemigoActualIndex === enemigos.length - 1) btnSig.textContent = "Ver Resultados Finales";
@@ -373,6 +376,30 @@ const resolverResultadoCombate = (enemigo) => {
             cambiarEscena('escena-fin');
         }, 3000);
     }
+};
+
+/**
+ *  animación de las tres monedas.
+ */
+const lanzarAnimacionMonedas = () => {
+    // La primera un 25%, la segunda un 50% y la tercera un 75% del ancho
+    const posiciones = ['25%', '50%', '75%'];
+    
+    posiciones.forEach(pos => {
+        // Método sugerido: insertAdjacentHTML para añadir al final del body
+        let monedaHtml = `
+            <img src="img/moneda.png" 
+                 alt="moneda" 
+                 class="moneda" 
+                 style="left: ${pos};">
+        `;
+        document.body.insertAdjacentHTML('beforeend', monedaHtml);
+    });
+
+    // Limpiamos el DOM tras la animación (3 segundos)
+    setTimeout(() => {
+        document.querySelectorAll('.moneda').forEach(m => m.remove());
+    }, 3000);
 };
 
 const siguienteRonda = () => {

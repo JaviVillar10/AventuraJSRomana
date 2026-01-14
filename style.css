@@ -317,3 +317,23 @@ tr{
     border-bottom: 1px solid rgba(0, 0, 0, 0.1);
     font-weight: normal; 
 }
+
+
+/* --- MONEDAS CAYENDO --- */
+.moneda {
+    position: fixed;
+    top: -100px;
+    width: 40px;
+    z-index: 2000;
+    pointer-events: none;
+    animation: monedaCaerYRotar 3s ease-in-out forwards;
+}
+
+@keyframes monedaCaerYRotar {
+    0% { top: -100px; transform: rotateY(0deg); opacity: 1; }
+    100% { 
+        top: 50vh; /* Baja hasta la mitad de la pantalla */
+        transform: rotateY(720deg); /* Rotación continua */
+        opacity: 0; /* Se difumina al final */
+    }
+}
