@@ -286,54 +286,130 @@ tr{
 }
 
 
-/* --- DISEÑO DE LA TABLA RANKING --- */
+/* ESTILOS EXTRAS DE ERRORES  */
+#error-nombre, #error-stats {
+    color: #ff4d4d;
+    font-size: 0.85em;
+    display: block;
+    min-height: 1.2em;
+    font-weight: bold;
+}
+
+
+
+/* --- MONEDERO  --- */
+.contenedor-monedero {
+    position: fixed;
+    bottom: 1vh; /* 1% del alto */
+    left: -200px; /* Oculto para la animación */
+    width: 120px;
+    z-index: 1500;
+    animation: entradaMonedero 2s ease-out forwards;
+}
+
+@keyframes entradaMonedero {
+    to { left: 2vw; } /* Se queda a 2% de la izquierda */
+}
+
+.img-monedero { 
+    width: 100%; 
+    display: block; 
+}
+
+.cantidad-dinero {
+    position: absolute;
+    top: 55%; /* Centrado vertical en la imagen */
+    left: 50%; /* Centrado horizontal en la imagen */
+    transform: translate(-50%, -50%); /* Ajuste perfecto al centro */
+    margin: 0;
+    font-weight: bold;
+    color: #000;
+    font-size: 1.3em;
+    pointer-events: none;
+}
+
+/* --- TABLA RANKING --- */
+.tarjeta-ranking {
+    max-height: 85vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding-bottom: 20px;
+}
 
 #tabla-ranking-html {
     width: 95%;
     max-width: 800px;
-    margin: 30px auto; 
-    border-collapse: collapse;
-    background-color: var(--color-arena); 
-    color: var(--color-texto); /* Color  para toda la tabla */
-    border-radius: 10px;
-    overflow: hidden;
+    margin: 0 auto; /* Eliminamos margen superior para evitar huecos */
+    background-color: var(--color-arena);
+    color: var(--color-texto);
+    
+    /* TABLA CON SCROLL INTERNO */
+    display: block;
+    max-height: 400px; 
+    overflow-y: auto;
+    
+    /* Evita huecos  */
+    border-collapse: separate; 
+    border-spacing: 0;
+    border: 2px solid var(--color-cuero-oscuro);
+    border-radius: 8px;
 }
 
 #tabla-ranking-html thead {
-    background-color: var(--color-cuero-oscuro);
+    position: sticky;
+    top: 0;
+    z-index: 10;
 }
 
 #tabla-ranking-html th {
+    background-color: var(--color-cuero-oscuro);
+    color: white;
     padding: 18px 15px;
-    text-align: center;
-    color: var(--color-texto); /* Color  en cabecera */
-    font-weight: bold;
     text-transform: uppercase;
+    font-size: 0.9em;
+    border-bottom: 2px solid rgba(0,0,0,0.2);
 }
 
 #tabla-ranking-html td {
     padding: 15px;
     text-align: center;
-    border-bottom: 1px solid rgba(0, 0, 0, 0.1);
-    font-weight: normal; 
+    border-bottom: 1px solid rgba(0,0,0,0.1);
+    min-width: 120px; 
 }
 
+/* FILAS DIFERENTES  */
+#tabla-ranking-html tbody tr:nth-child(odd) {
+    background-color: rgba(0, 0, 0, 0.03);
+}
 
-/* --- MONEDAS CAYENDO --- */
-.moneda {
+#tabla-ranking-html tbody tr:nth-child(even) {
+    background-color: rgba(0, 0, 0, 0.15); /* Más oscuro para contraste */
+}
+
+/* --- MONEDAS  --- */
+.moneda-animada {
     position: fixed;
     top: -100px;
-    width: 40px;
-    z-index: 2000;
+    width: 50px;
+    height: 50px;
+    z-index: 9999; /* Por encima de todo */
     pointer-events: none;
-    animation: monedaCaerYRotar 3s ease-in-out forwards;
+    animation: caerYRotar 2.5s ease-in forwards;
 }
 
-@keyframes monedaCaerYRotar {
-    0% { top: -100px; transform: rotateY(0deg); opacity: 1; }
+@keyframes caerYRotar {
+    0% { 
+        top: -100px; 
+        transform: rotateY(0deg) scale(1); 
+        opacity: 1; 
+    }
+    70% { 
+        opacity: 1; 
+    }
     100% { 
-        top: 50vh; /* Baja hasta la mitad de la pantalla */
-        transform: rotateY(720deg); /* Rotación continua */
-        opacity: 0; /* Se difumina al final */
+        top: 55vh; 
+        transform: rotateY(1080deg) scale(0.8); 
+        opacity: 0; 
     }
 }

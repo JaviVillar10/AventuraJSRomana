@@ -5,10 +5,12 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Aventura en el Coliseo: Gladiadores</title>
     <link rel="stylesheet" href="style.css">
+    
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
     <script type="module" src="src/main.js"></script>
 </head>
 <body>
+
     <main id="app-container">
         <section id="escena-crear" class="escena visible">
             <div class="tarjeta-crear">
@@ -16,10 +18,11 @@
                 <div class="avatar-container">
                     <img id="img-jugador-inicio" src="img/Gladiador.png" alt="Avatar Jugador">
                 </div>
+
                 <form id="crear-personaje">
                     <label for="nombre">Nombre:</label>
-                    <input type="text" name="nombre-jugador">
-                    <span id="error-nombre" style="color:red; display:block; font-size:0.8em; font-weight:bold;"></span>
+                    <input type="text" name="nombre-jugador" id="nombre-input">
+                    <span id="error-nombre"></span>
 
                     <label for="ataque">Ataque:</label>
                     <input type="number" name="ataque" value="0">
@@ -29,14 +32,12 @@
 
                     <label for="vida">Vida:</label>
                     <input type="number" name="vida" value="100">
-                    
-                    <span id="error-stats" style="color:red; display:block; font-size:0.8em; font-weight:bold;"></span>
+
+                    <span id="error-stats"></span>
                     <button type="submit" style="display:none;">Submit</button>
                 </form>
+
                 <button id="btn-ir-inicio" class="btn-juego">Empieza la lucha</button>
-                <div>
-                  <p id="tr" class="tr">500</p> <img id="bolsa" class="bolsa" src="./img/monedero.png"> 
-                </div>
             </div>
         </section>
 
@@ -113,37 +114,47 @@
             <button id="btn-siguiente-batalla" class="btn-juego oculta">Siguiente Enemigo</button>
         </section>
 
-     <section id="escena-fin" class="escena oculta">
+        <section id="escena-fin" class="escena oculta">
             <div class="tarjeta-resultado">
                 <h1>Fin de los Juegos</h1>
                 <h2 id="rango-final">Calculando...</h2>
                 <p>Puntos de Batalla: <span id="resumen-puntos">0</span></p>
                 <p>Monedas Restantes: <span id="resumen-monedas">0</span></p>
-                <p>Puntuación Total: <span id="puntuacion-final">0</span></p>
+                <p style="font-weight:bold; font-size:1.2em; border-top:1px solid gold; padding-top:10px;">
+                    Puntuación Total: <span id="puntuacion-final">0</span>
+                </p>
                 <button id="btn-ir-ranking-escena" class="btn-juego">Ir al Ranking</button>
             </div>
         </section>
-        
-        <section id="escena-ranking" class="escena oculta">
-            <div class="tarjeta-ranking" style="max-height: 80vh; overflow-y: auto; padding: 20px;">
-                <h1>Ranking:</h1>
-                <table id="tabla-ranking-html">
-                    <thead>
-                        <tr >
-                            <th>Nombre</th>
-                            <th>Puntos</th>
-                            <th>Monedas</th>
-                            <th id="total-ranking">TOTAL</th>
-                        </tr>
-                    </thead>
-                    <tbody id="cuerpo-ranking">
-                        </tbody>
-                </table>
-                <button id="btn-mostrar-terminal" class="btn-juego">Mostrar en terminal</button>
-                <br>
-                <button id="btn-reiniciar" class="btn-juego">Reiniciar Juego</button>
-            </div>
-        </section>
+
+    <section id="escena-ranking" class="escena oculta">
+    <div class="tarjeta-ranking">
+        <h1>RANKING</h1>
+        <div class="tabla-scroll-container">
+            <table id="tabla-ranking-html">
+                <thead>
+                    <tr>
+                        <th>Nombre</th>
+                        <th>Puntos</th>
+                        <th>Monedas</th>
+                        <th>TOTAL</th>
+                    </tr>
+                </thead>
+                <tbody id="cuerpo-ranking">
+                    </tbody>
+            </table>
+        </div>
+        <button id="btn-mostrar-terminal" class="btn-juego">Mostrar en terminal</button>
+        <button id="btn-reiniciar" class="btn-juego">Reiniciar</button>
+    </div>
+</section>
+
     </main>
+
+<footer id="footer-monedero" class="contenedor-monedero">
+    <p id="tr" class="cantidad-dinero">500</p> 
+    <img src="img/monedero.png" alt="bolsa" class="img-monedero">
+</footer>
+
 </body>
 </html>
