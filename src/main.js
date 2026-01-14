@@ -32,7 +32,7 @@ const init = () => {
         DATOS_JUGADOR.defensaBase
     );
     
-    //  Dinero inicial
+    // Dinero inicial
     jugador.dinero = 500;
 
     enemigos = LISTA_ENEMIGOS.map(datos => {
@@ -76,7 +76,7 @@ const asignarEventosBotones = () => {
         location.reload();
     });
 
-    // --- LÓGICA DE VALIDACIÓN  ---
+    // --- LÓGICA DE VALIDACIÓN EXAMEN (EJERCICIO 1) ---
     document.getElementById('btn-ir-inicio').addEventListener('click', () => {
         const formulario = document.getElementById('crear-personaje');
         const errNom = document.getElementById('error-nombre');
@@ -117,18 +117,24 @@ const asignarEventosBotones = () => {
         }
     });
 
-    // --- EVENTOS DE RANKING (EJERCICIO 4) ---
-    document.getElementById('btn-ir-ranking-escena').addEventListener('click', () => {
-        mostrarRankingEnPantalla();
-        cambiarEscena('escena-ranking');
-    });
+    // --- EVENTOS DE RANKING  ---
+    const btnIrRanking = document.getElementById('btn-ir-ranking-escena');
+    if (btnIrRanking) {
+        btnIrRanking.addEventListener('click', () => {
+            mostrarRankingEnPantalla();
+            cambiarEscena('escena-ranking');
+        });
+    }
 
-    document.getElementById('btn-mostrar-terminal').addEventListener('click', () => {
-        const ranking = JSON.parse(localStorage.getItem('ranking_gladiadores')) || [];
-        ranking.sort((a, b) => b.puntuacionTotal - a.puntuacionTotal);
-        console.log("%c--- RANKING DE GLADIADORES (TERMINAL) ---", "color: gold; font-weight: bold; font-size: 14px;");
-        console.table(ranking);
-    });
+    const btnTerminal = document.getElementById('btn-mostrar-terminal');
+    if (btnTerminal) {
+        btnTerminal.addEventListener('click', () => {
+            const ranking = JSON.parse(localStorage.getItem('ranking_gladiadores')) || [];
+            ranking.sort((a, b) => b.puntuacionTotal - a.puntuacionTotal);
+            console.log("%c--- RANKING TÉCNICO (TERMINAL) ---", "color: gold; font-weight: bold; font-size: 14px;");
+            console.table(ranking);
+        });
+    }
 };
 
 /**
@@ -291,7 +297,6 @@ const iniciarSistemaBatallas = () => {
 
 const prepararBatalla = () => {
     const enemigo = enemigos[enemigoActualIndex];
-    // --- ASIGNACIÓN DE IMÁGENES ---
     document.getElementById('img-enemigo-actual').src = enemigo.imagen;
     document.getElementById('img-batalla-jugador').src = jugador.imagen;
     
@@ -300,7 +305,6 @@ const prepararBatalla = () => {
     document.getElementById('mensaje-batalla').style.color = 'black';
     document.getElementById('btn-siguiente-batalla').classList.add('oculta');
 
-    // Animación de entrada
     const arena = document.querySelector('.area-combate');
     const luchadores = document.querySelectorAll('.luchador');
     arena.classList.remove('start-anim');
@@ -348,10 +352,6 @@ const actualizarBarrasVida = (enemigo) => {
     document.getElementById('batalla-vida-enemigo').textContent = enemigo.vida;
 };
 
-/**
- * Evalúa el resultado final del combate (CON PREMIOS EJERCICIO 3).
- * @param {Enemigo} enemigo - El enemigo contra el que se ha luchado.
- */
 const resolverResultadoCombate = (enemigo) => {
     if (jugador.estaVivo()) {
         let ptsG = 100 + enemigo.ataque;
@@ -386,7 +386,7 @@ const siguienteRonda = () => {
 };
 
 /**
- * Muestra la pantalla final.
+ * Muestra la pantalla final y guarda los datos en LocalStorage.
  */
 const mostrarPantallaFinal = () => {
     const rangoH2 = document.getElementById('rango-final');
@@ -416,22 +416,23 @@ const mostrarPantallaFinal = () => {
 };
 
 /**
- * Renderiza la tabla del Ranking en el HTML 
+ * Renderiza la tabla de ranking en el HTML
  */
 const mostrarRankingEnPantalla = () => {
     const ranking = JSON.parse(localStorage.getItem('ranking_gladiadores')) || [];
     ranking.sort((a, b) => b.puntuacionTotal - a.puntuacionTotal);
     const cuerpo = document.getElementById('cuerpo-ranking');
+    if (!cuerpo) return;
+    
     cuerpo.innerHTML = '';
 
     ranking.forEach(item => {
         const fila = document.createElement('tr');
-        fila.style.borderBottom = "1px solid #555";
         fila.innerHTML = `
-            <td style="padding:8px;">${item.gladiador}</td>
-            <td style="text-align:center;">${item.puntosBatalla}</td>
-            <td style="text-align:center;">${item.monedasRestantes}</td>
-            <td style="text-align:center; font-weight:bold; color:gold;">${item.puntuacionTotal}</td>
+            <td>${item.gladiador}</td>
+            <td>${item.puntosBatalla}</td>
+            <td>${item.monedasRestantes}</td>
+            <td>${item.puntuacionTotal}</td>
         `;
         cuerpo.appendChild(fila);
     });
