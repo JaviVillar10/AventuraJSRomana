@@ -28,7 +28,7 @@
         <article>
             <pre class="prettyprint source linenums"><code>/* src/main.js */
 
-import { DATOS_JUGADOR, LISTA_ENEMIGOS, MERCADO_PRODUCTOS, PUNTOS_PARA_VETERANO } from './constants.js';
+import { DATOS_JUGADOR, LISTA_ENEMIGOS, MERCADO_PRODUCTOS, PUNTOS_PARA_VETERANO, REGEX } from './constants.js';
 import { formatearPrecio, obtenerAleatorio, esperar } from './utils.js';
 import { Jugador } from './classes/Jugador.js';
 import { Enemigo, Jefe } from './classes/Enemigo.js';
@@ -40,12 +40,25 @@ import { Producto } from './classes/Producto.js';
  * @module main
  */
 
-// --- ESTADO ---
+
 let jugador;
 let enemigos = [];
 let enemigoActualIndex = 0;
-let gastoTotal = 0;
 
+/**
+ * Función para actualizar visualmente el monedero en el footer.
+ * Sincroniza el valor de jugador.dinero con el elemento #tr.
+ */
+const refrescarDineroVisual = () => {
+    const elTr = document.getElementById('tr');
+    if (elTr) {
+        elTr.textContent = jugador.dinero;
+    }
+    const elGasto = document.getElementById('gasto-total');
+    if (elGasto) {
+        elGasto.textContent = jugador.dinero;
+    }
+};
 
 /**
  * Función de inicialización principal.
@@ -60,6 +73,11 @@ const init = () => {
         DATOS_JUGADOR.ataqueBase,
         DATOS_JUGADOR.defensaBase
     );
+    
+    
+    jugador.dinero = 500;
+    
+    refrescarDineroVisual();
 
     enemigos = LISTA_ENEMIGOS.map(datos => {
         if (datos.esJefe) {
@@ -71,8 +89,13 @@ const init = () => {
 
     asignarEventosBotones();
     actualizarInfoJugadorInicio();
+    sembrarRankingFicticio();
+    renderizarInventarioUI();
 };
 
+/**
+ * Asigna los listeners a todos los botones de la interfaz.
+ */
 const asignarEventosBotones = () => {
     document.getElementById('btn-ir-mercado').addEventListener('click', () => {
         cargarMercado();
@@ -101,14 +124,76 @@ const asignarEventosBotones = () => {
     document.getElementById('btn-reiniciar').addEventListener('click', () => {
         location.reload();
     });
+
+
+    document.getElementById('btn-ir-inicio').addEventListener('click', () => {
+        const formulario = document.getElementById('crear-personaje');
+        const errNom = document.getElementById('error-nombre');
+        const errStat = document.getElementById('error-stats');
+
+        errNom.textContent = "";
+        errStat.textContent = "";
+
+        const nombre = formulario.elements['nombre-jugador'].value.trim();
+        const atkVal = parseInt(formulario.elements['ataque'].value);
+        const defVal = parseInt(formulario.elements['defensa'].value);
+        const vidVal = parseInt(formulario.elements['vida'].value);
+
+        let errores = false;
+
+        if (!REGEX.NOMBRE_GLADIADOR.test(nombre)) {
+            errNom.textContent = "La primera letra debe ser Mayúscula (máx 20 carac).";
+            errores = true;
+        }
+
+        if (atkVal &lt; 0 || defVal &lt; 0) {
+        errStat.textContent = "El ataque y la defensa no pueden ser valores negativos.";
+        errores = true;
+    }
+
+        if (vidVal &lt; 100) {
+            errStat.textContent = "La vida no puede ser inferior a 100 puntos.";
+            errores = true;
+        } else if ((atkVal + defVal + vidVal) > 110) {
+            errStat.textContent = "Total excedido. Solo puedes repartir 10 puntos extra.";
+            errores = true;
+        }
+
+        if (!errores) {
+            jugador.nombre = nombre;
+            jugador.ataqueBase = atkVal;
+            jugador.defensaBase = defVal;
+            jugador.vida = vidVal;
+            jugador.vidaMaxima = vidVal;
+
+            actualizarInfoJugadorInicio();
+            cambiarEscena('escena-inicio');
+        }
+    });
+
+    const btnRanking = document.getElementById('btn-ir-ranking-escena');
+    if (btnRanking) {
+        btnRanking.addEventListener('click', () => {
+            mostrarRankingEnPantalla();
+            cambiarEscena('escena-ranking');
+        });
+    }
+
+    const btnTerminal = document.getElementById('btn-mostrar-terminal');
+    if (btnTerminal) {
+        btnTerminal.addEventListener('click', () => {
+            const ranking = JSON.parse(localStorage.getItem('ranking_gladiadores')) || [];
+            ranking.sort((a, b) => b.puntuacionTotal - a.puntuacionTotal);
+            console.log("%c--- RANKING TÉCNICO (TERMINAL) ---", "color: gold; font-weight: bold;");
+            console.table(ranking);
+        });
+    }
 };
 
 /**
  * Controla la visibilidad de las escenas del juego.
- * Oculta todas las secciones y muestra únicamente la que coincide con el ID proporcionado.
  * @param {string} idEscena - El ID del elemento HTML de la escena a mostrar.
  */
-
 const cambiarEscena = (idEscena) => {
     const escenas = document.querySelectorAll('.escena');
     escenas.forEach(escena => {
@@ -122,17 +207,27 @@ const cambiarEscena = (idEscena) => {
     });
 };
 
-// --- ESCENA 1 ---
+/**
+ * Actualiza los datos del jugador en la escena de inicio/bienvenida.
+ */
 function actualizarInfoJugadorInicio() {
     document.getElementById('nombre-jugador').textContent = jugador.nombre;
     document.getElementById('vida-jugador').textContent = jugador.vida;
     document.getElementById('ataque-jugador').textContent = jugador.ataqueBase;
     document.getElementById('defensa-jugador').textContent = jugador.defensaBase;
     document.getElementById('img-jugador-inicio').src = jugador.imagen;
+    
+    const imgRes = document.getElementById('img-jugador-inicio-resumen');
+    if(imgRes) imgRes.src = jugador.imagen;
+
+    refrescarDineroVisual();
 }
 
-// --- ESCENA 2: MERCADO ---
+/**
+ * Carga y renderiza los productos en la escena del mercado.
+ */
 const cargarMercado = () => {
+    refrescarDineroVisual();
     const contenedor = document.getElementById('contenedor-productos');
     contenedor.innerHTML = '';
 
@@ -176,68 +271,78 @@ const cargarMercado = () => {
     });
 };
 
-
 /**
  * Gestiona la lógica de compra y devolución de objetos.
- * Actualiza el inventario del jugador, el dinero gastado y la interfaz.
  * @param {Producto} producto - El objeto seleccionado.
  * @param {HTMLButtonElement} boton - El botón pulsado.
- * @param {HTMLElement} tarjetaDiv - El contenedor visual de la tarjeta de producto.
+ * @param {HTMLElement} tarjetaDiv - El contenedor visual de la tarjeta.
  */
 function gestionarCompra(producto, boton, tarjetaDiv) {
     const index = jugador.inventario.findIndex(p => p.nombre === producto.nombre);
 
     if (index === -1) {
+        if (jugador.dinero &lt; producto.precio) {
+            alert("No tienes suficiente oro.");
+            return;
+        }
         jugador.agregarObjeto(producto);
-        gastoTotal += producto.precio;
-        
+        jugador.dinero -= producto.precio;
         boton.textContent = "Retirar";
         boton.classList.add('btn-retirar');
         tarjetaDiv.style.backgroundColor = "#c8e6c9";
     } else {
         jugador.inventario.splice(index, 1);
-        gastoTotal -= producto.precio;
-        
+        jugador.dinero += producto.precio;
         if(producto.tipo === 'consumible') {
             jugador.vida -= producto.bonus;
             jugador.vidaMaxima -= producto.bonus;
         }
-
         boton.textContent = "Comprar";
         boton.classList.remove('btn-retirar');
         tarjetaDiv.style.backgroundColor = "";
     }
 
-    document.getElementById('gasto-total').textContent = gastoTotal;
+    refrescarDineroVisual();
     renderizarInventarioUI();
 }
 
+/**
+ * Renderiza los iconos de los objetos comprados en los slots del footer.
+ * Esto asegura que las imágenes se vean en los recuadros correspondientes.
+ */
 const renderizarInventarioUI = () => {
-    const contInv = document.getElementById('contenedor-inventario');
-    contInv.innerHTML = '';
+    const slots = document.querySelectorAll('.slot');
+    
+    slots.forEach(slot => slot.innerHTML = '');
 
-    jugador.inventario.forEach(item => {
-        const img = document.createElement('img');
-        img.src = item.imagen;
-        img.style.width = '50px';
-        img.style.border = '1px solid #000';
-        img.title = item.nombre;
-        contInv.appendChild(img);
+    jugador.inventario.forEach((item, index) => {
+        if (slots[index]) {
+            const img = document.createElement('img');
+            img.src = item.imagen;
+            img.alt = item.nombre;
+            img.title = item.nombre;
+            slots[index].appendChild(img);
+        }
     });
 };
 
-// --- ESCENA 3: ESTADO FINAL ---
+/**
+ * Muestra las estadísticas finales calculadas antes del combate.
+ */
 const mostrarEstadoFinal = () => {
     document.getElementById('stat-ataque-final').textContent = jugador.obtenerAtaqueTotal();
     document.getElementById('stat-defensa-final').textContent = jugador.obtenerDefensaTotal();
     document.getElementById('stat-vida-final').textContent = jugador.vida;
+    const imgEst = document.getElementById('img-jugador-estado');
+    if(imgEst) imgEst.src = jugador.imagen;
 };
 
-// --- ESCENA 4: GALERÍA ---
+/**
+ * Muestra la lista de oponentes.
+ */
 const mostrarGaleriaEnemigos = () => {
     const lista = document.getElementById('lista-enemigos');
     lista.innerHTML = '';
-
     enemigos.forEach(enemigo => {
         const ficha = document.createElement('div');
         ficha.className = 'ficha-producto';
@@ -252,129 +357,97 @@ const mostrarGaleriaEnemigos = () => {
     });
 };
 
-// --- ESCENA 5: BATALLA ---
+/**
+ * Inicializa el carrusel de batallas.
+ */
 const iniciarSistemaBatallas = () => {
     enemigoActualIndex = 0;
     prepararBatalla();
 };
 
+/**
+ * Prepara el escenario para un combate individual.
+ */
 const prepararBatalla = () => {
     const enemigo = enemigos[enemigoActualIndex];
     document.getElementById('img-enemigo-actual').src = enemigo.imagen;
+    document.getElementById('img-batalla-jugador').src = jugador.imagen;
+    
     actualizarBarrasVida(enemigo);
-
     document.getElementById('mensaje-batalla').textContent = `¡Aparece un ${enemigo.nombre}!`;
     document.getElementById('mensaje-batalla').style.color = 'black';
     document.getElementById('btn-siguiente-batalla').classList.add('oculta');
 
-    // Animación de entrada 
     const arena = document.querySelector('.area-combate');
     const luchadores = document.querySelectorAll('.luchador');
-
-    // 1. Resetear
     arena.classList.remove('start-anim');
     luchadores.forEach(l => l.style.transition = 'none');
-
-    // 2. Activar
     setTimeout(() => {
         luchadores.forEach(l => l.style.transition = '');
         arena.classList.add('start-anim');
-        
-        // Empezar turnos
-        setTimeout(() => {
-            combate(enemigo);
-        }, 1000);
+        setTimeout(() => combate(enemigo), 1000);
     }, 50);
 };
 
 /**
- * Bucle principal de combate asíncrono.
- * Gestiona los turnos, cálculo de daño y actualización de la interfaz hasta que uno muera.
- * @param {Enemigo} enemigo - El oponente actual.
+ * Bucle de combate asíncrono.
  */
-
 async function combate(enemigo) {
-    // Espera inicial gestionada por el timeout de arriba
-
     while (jugador.estaVivo() &amp;&amp; enemigo.estaVivo()) {
         const ataqueJ = jugador.obtenerAtaqueTotal();
         enemigo.recibirDaño(ataqueJ);
-        
-        document.getElementById('mensaje-batalla').textContent = 
-            `Atacas a ${enemigo.nombre}: ${ataqueJ} daño.`;
-        
+        document.getElementById('mensaje-batalla').textContent = `Atacas a ${enemigo.nombre}: ${ataqueJ} daño.`;
         actualizarBarrasVida(enemigo);
-        
         if (!enemigo.estaVivo()) break;
-        
         await esperar(1500);
 
         const defensaJ = jugador.obtenerDefensaTotal();
         let dañoRecibido = enemigo.ataque - defensaJ;
         if (dañoRecibido &lt; 0) dañoRecibido = 0;
-
         jugador.recibirDaño(dañoRecibido);
-
-        document.getElementById('mensaje-batalla').textContent = 
-            `${enemigo.nombre} te ataca: ${dañoRecibido} daño.`;
+        document.getElementById('mensaje-batalla').textContent = `${enemigo.nombre} te ataca: ${dañoRecibido} daño.`;
         document.getElementById('mensaje-batalla').style.color = 'red';
-
         actualizarBarrasVida(enemigo);
-
         if (!jugador.estaVivo()) break;
-
         await esperar(1500);
         document.getElementById('mensaje-batalla').style.color = 'black';
     }
-
     resolverResultadoCombate(enemigo);
 }
 
 /**
- * Actualiza el ancho de las barras de vida en el DOM según la vida actual/máxima.
- * @param {Enemigo} enemigo - El enemigo actual para calcular su barra.
+ * Actualiza las barras de salud en pantalla.
  */
-
 const actualizarBarrasVida = (enemigo) => {
-    const vidaMaxJ = jugador.vidaMaxima;
-    const porcentajeJ = (jugador.vida / vidaMaxJ) * 100;
-    document.getElementById('vida-bar-jugador').style.width = `${Math.max(0, porcentajeJ)}%`;
+    const porcJ = (jugador.vida / jugador.vidaMaxima) * 100;
+    document.getElementById('vida-bar-jugador').style.width = `${Math.max(0, porcJ)}%`;
     document.getElementById('batalla-vida-jugador').textContent = jugador.vida;
-
-    const vidaMaxE = enemigo.vidaMaxima; 
-    const porcentajeE = (enemigo.vida / vidaMaxE) * 100;
-    document.getElementById('vida-bar-enemigo').style.width = `${Math.max(0, porcentajeE)}%`; 
+    const porcE = (enemigo.vida / enemigo.vidaMaxima) * 100;
+    document.getElementById('vida-bar-enemigo').style.width = `${Math.max(0, porcE)}%`; 
     document.getElementById('batalla-vida-enemigo').textContent = enemigo.vida;
 };
 
 /**
- * Evalúa el resultado final del combate (Victoria o Derrota).
- * Asigna puntos y gestiona la transición a la siguiente ronda o pantalla final.
- * @param {Enemigo} enemigo - El enemigo contra el que se ha luchado.
+ * Gestiona el premio tras la victoria y la animación de monedas
  */
-
 const resolverResultadoCombate = (enemigo) => {
     if (jugador.estaVivo()) {
-        let puntosGanados = 100 + enemigo.ataque;
-        if (enemigo instanceof Jefe) {
-            puntosGanados = Math.floor(puntosGanados * enemigo.multiplicador);
-            document.getElementById('mensaje-batalla').textContent = `¡HAS DERROTADO AL JEFE! +${puntosGanados} puntos.`;
-        } else {
-            document.getElementById('mensaje-batalla').textContent = `¡Victoria! +${puntosGanados} puntos.`;
-        }
+        let ptsG = 100 + enemigo.ataque;
+        let monG = (enemigo instanceof Jefe) ? 10 : 5;
         
+        jugador.dinero += monG;
+        jugador.sumarPuntos(ptsG);
+        refrescarDineroVisual();
+
+        document.getElementById('mensaje-batalla').innerHTML = `¡Victoria! +${ptsG} pts &lt;br> &lt;span style="font-weight: bold;">+${monG} monedas 🪙&lt;/span>`;
         document.getElementById('mensaje-batalla').style.color = 'green';
-        jugador.sumarPuntos(puntosGanados);
 
-        
+      
+        lanzarAnimacionMonedas();
 
-        const btnSiguiente = document.getElementById('btn-siguiente-batalla');
-        btnSiguiente.classList.remove('oculta');
-        
-        if (enemigoActualIndex === enemigos.length - 1) {
-            btnSiguiente.textContent = "Ver Resultados Finales";
-        }
-
+        const btnSig = document.getElementById('btn-siguiente-batalla');
+        btnSig.classList.remove('oculta');
+        if (enemigoActualIndex === enemigos.length - 1) btnSig.textContent = "Ver Resultados Finales";
     } else {
         document.getElementById('mensaje-batalla').textContent = "Has caído en la arena... Honor y Gloria.";
         setTimeout(() => {
@@ -384,6 +457,25 @@ const resolverResultadoCombate = (enemigo) => {
     }
 };
 
+/**
+ * Crea la animación de 3 monedas cayendo.
+ */
+const lanzarAnimacionMonedas = () => {
+    const posiciones = ['25%', '50%', '75%'];
+    posiciones.forEach(pos => {
+        let monedaHtml = `&lt;img src="img/moneda.png" alt="moneda" class="moneda-animada" style="left: ${pos};">`;
+        document.body.insertAdjacentHTML('beforeend', monedaHtml);
+    });
+
+    setTimeout(() => {
+        const monedas = document.querySelectorAll('.moneda-animada');
+        monedas.forEach(m => m.remove());
+    }, 3000);
+};
+
+/**
+ * Pasa al siguiente enemigo o termina el juego.
+ */
 const siguienteRonda = () => {
     enemigoActualIndex++;
     if (enemigoActualIndex &lt; enemigos.length) {
@@ -394,31 +486,88 @@ const siguienteRonda = () => {
     }
 };
 
-// --- ESCENA 6 ---
+/**
+ * Escena final de resultados y guardado en LocalStorage.
+ */
 const mostrarPantallaFinal = () => {
     const rangoH2 = document.getElementById('rango-final');
-    const puntosSpan = document.getElementById('puntuacion-final');
+    const totalFinal = jugador.puntos + jugador.dinero;
 
-    puntosSpan.textContent = jugador.puntos;
+    document.getElementById('resumen-puntos').textContent = jugador.puntos;
+    document.getElementById('resumen-monedas').textContent = jugador.dinero;
+    document.getElementById('puntuacion-final').textContent = totalFinal;
 
-    if (jugador.puntos >= PUNTOS_PARA_VETERANO) {
+    const registro = {
+        gladiador: jugador.nombre,
+        puntosBatalla: jugador.puntos,
+        monedasRestantes: jugador.dinero,
+        puntuacionTotal: totalFinal
+    };
+    let ranking = JSON.parse(localStorage.getItem('ranking_gladiadores')) || [];
+    ranking.push(registro);
+    localStorage.setItem('ranking_gladiadores', JSON.stringify(ranking));
+
+    const haGanadoElJuego = jugador.estaVivo() &amp;&amp; enemigoActualIndex >= enemigos.length;
+
+    if (haGanadoElJuego) {
         rangoH2.textContent = "¡VETERANO DE LA ARENA!";
-        rangoH2.style.color = "gold";
+        rangoH2.style.color = "var(--color-verde-exito)";
         lanzarConfeti();
     } else {
-        rangoH2.textContent = "Novato... Sigue entrenando.";
-        rangoH2.style.color = "gray";
+        rangoH2.textContent = "Novato... Has caído en combate.";
+        rangoH2.style.color = "var(--color-rojo-sangre)";
     }
 };
 
+/**
+ * Rellena la tabla HTML del ranking.
+ * 
+ */
+const mostrarRankingEnPantalla = () => {
+    const ranking = JSON.parse(localStorage.getItem('ranking_gladiadores')) || [];
+    ranking.sort((a, b) => b.puntuacionTotal - a.puntuacionTotal);
+    const cuerpo = document.getElementById('cuerpo-ranking');
+    if (!cuerpo) return;
+    
+    cuerpo.innerHTML = '';
+
+    ranking.forEach(item => {
+        const fila = document.createElement('tr');
+
+        fila.innerHTML = `
+            &lt;td>${item.gladiador}&lt;/td>
+            &lt;td>${item.puntosBatalla}&lt;/td>
+            &lt;td>${item.monedasRestantes}&lt;/td>
+            &lt;td style="font-weight:bold;">${item.puntuacionTotal}&lt;/td>
+        `;
+        cuerpo.appendChild(fila);
+    });
+};
+
+
+const sembrarRankingFicticio = () => {
+    let ranking = JSON.parse(localStorage.getItem('ranking_gladiadores')) || [];
+    
+    if (ranking.length === 0) {
+        const gladiadoresLeyenda = [
+            { gladiador: "Adrian", puntosBatalla: 2000, monedasRestantes: 50, puntuacionTotal: 2550 },
+            { gladiador: "Diego", puntosBatalla: 1900, monedasRestantes: 30, puntuacionTotal: 2130 },
+            { gladiador: "Alberto", puntosBatalla: 1800, monedasRestantes: 80, puntuacionTotal: 1880 },
+            { gladiador: "Elias", puntosBatalla: 1500, monedasRestantes: 40, puntuacionTotal: 1540 },
+            { gladiador: "Paco", puntosBatalla: 1200, monedasRestantes: 100, puntuacionTotal: 1300 },
+            { gladiador: "Alejandro", puntosBatalla: 900, monedasRestantes: 20, puntuacionTotal: 920 },
+            { gladiador: "Ronic", puntosBatalla: 500, monedasRestantes: 10, puntuacionTotal: 510 }
+        ];
+        localStorage.setItem('ranking_gladiadores', JSON.stringify(gladiadoresLeyenda));
+    }
+};
+
+/**
+ * Efecto visual de confeti.
+ */
 function lanzarConfeti() {
     if (window.confetti) {
-        window.confetti({
-            particleCount: 150,
-            spread: 70,
-            origin: { y: 0.6 },
-            colors: ['#daa520', '#b71c1c', '#ffffff']
-        });
+        window.confetti({ particleCount: 150, spread: 70, origin: { y: 0.6 }, colors: ['#daa520', '#b71c1c', '#ffffff'] });
     }
 }
 
@@ -438,7 +587,7 @@ document.addEventListener('DOMContentLoaded', init);</code></pre>
 <br class="clear">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 4.0.5</a> on Wed Dec 03 2025 23:14:29 GMT+0100 (hora estándar de Europa central)
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 4.0.5</a> on Thu Jan 15 2026 02:52:20 GMT+0100 (hora estándar de Europa central)
 </footer>
 
 <script> prettyPrint(); </script>

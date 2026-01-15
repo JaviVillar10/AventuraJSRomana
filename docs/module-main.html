@@ -144,7 +144,7 @@
     
 
     
-    <h4 class="name" id="~actualizarBarrasVida"><span class="type-signature">(inner) </span>actualizarBarrasVida<span class="signature">(enemigo)</span><span class="type-signature"></span></h4>
+    <h4 class="name" id="~actualizarBarrasVida"><span class="type-signature">(inner) </span>actualizarBarrasVida<span class="signature">()</span><span class="type-signature"></span></h4>
     
 
     
@@ -152,7 +152,7 @@
 
 
 <div class="description">
-    Actualiza el ancho de las barras de vida en el DOM según la vida actual/máxima.
+    Actualiza las barras de salud en pantalla.
 </div>
 
 
@@ -161,55 +161,6 @@
 
 
 
-
-
-    <h5>Parameters:</h5>
-    
-
-<table class="params">
-    <thead>
-    <tr>
-        
-        <th>Name</th>
-        
-
-        <th>Type</th>
-
-        
-
-        
-
-        <th class="last">Description</th>
-    </tr>
-    </thead>
-
-    <tbody>
-    
-
-        <tr>
-            
-                <td class="name"><code>enemigo</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type"><a href="Enemigo.html">Enemigo</a></span>
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last">El enemigo actual para calcular su barra.</td>
-        </tr>
-
-    
-    </tbody>
-</table>
 
 
 
@@ -245,7 +196,183 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="main.js.html">main.js</a>, <a href="main.js.html#line310">line 310</a>
+        <a href="main.js.html">main.js</a>, <a href="main.js.html#line393">line 393</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        
+            
+
+    
+
+    
+    <h4 class="name" id="~actualizarInfoJugadorInicio"><span class="type-signature">(inner) </span>actualizarInfoJugadorInicio<span class="signature">()</span><span class="type-signature"></span></h4>
+    
+
+    
+
+
+
+<div class="description">
+    Actualiza los datos del jugador en la escena de inicio/bienvenida.
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="main.js.html">main.js</a>, <a href="main.js.html#line185">line 185</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        
+            
+
+    
+
+    
+    <h4 class="name" id="~asignarEventosBotones"><span class="type-signature">(inner) </span>asignarEventosBotones<span class="signature">()</span><span class="type-signature"></span></h4>
+    
+
+    
+
+
+
+<div class="description">
+    Asigna los listeners a todos los botones de la interfaz.
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="main.js.html">main.js</a>, <a href="main.js.html#line71">line 71</a>
     </li></ul></dd>
     
 
@@ -289,7 +416,7 @@
 
 
 <div class="description">
-    Controla la visibilidad de las escenas del juego.Oculta todas las secciones y muestra únicamente la que coincide con el ID proporcionado.
+    Controla la visibilidad de las escenas del juego.
 </div>
 
 
@@ -382,7 +509,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="main.js.html">main.js</a>, <a href="main.js.html#line84">line 84</a>
+        <a href="main.js.html">main.js</a>, <a href="main.js.html#line169">line 169</a>
     </li></ul></dd>
     
 
@@ -418,7 +545,7 @@
     
 
     
-    <h4 class="name" id="~combate"><span class="type-signature">(async, inner) </span>combate<span class="signature">(enemigo)</span><span class="type-signature"></span></h4>
+    <h4 class="name" id="~cargarMercado"><span class="type-signature">(inner) </span>cargarMercado<span class="signature">()</span><span class="type-signature"></span></h4>
     
 
     
@@ -426,7 +553,7 @@
 
 
 <div class="description">
-    Bucle principal de combate asíncrono.Gestiona los turnos, cálculo de daño y actualización de la interfaz hasta que uno muera.
+    Carga y renderiza los productos en la escena del mercado.
 </div>
 
 
@@ -435,55 +562,6 @@
 
 
 
-
-
-    <h5>Parameters:</h5>
-    
-
-<table class="params">
-    <thead>
-    <tr>
-        
-        <th>Name</th>
-        
-
-        <th>Type</th>
-
-        
-
-        
-
-        <th class="last">Description</th>
-    </tr>
-    </thead>
-
-    <tbody>
-    
-
-        <tr>
-            
-                <td class="name"><code>enemigo</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type"><a href="Enemigo.html">Enemigo</a></span>
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last">El oponente actual.</td>
-        </tr>
-
-    
-    </tbody>
-</table>
 
 
 
@@ -519,7 +597,95 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="main.js.html">main.js</a>, <a href="main.js.html#line268">line 268</a>
+        <a href="main.js.html">main.js</a>, <a href="main.js.html#line201">line 201</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        
+            
+
+    
+
+    
+    <h4 class="name" id="~combate"><span class="type-signature">(async, inner) </span>combate<span class="signature">()</span><span class="type-signature"></span></h4>
+    
+
+    
+
+
+
+<div class="description">
+    Bucle de combate asíncrono.
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="main.js.html">main.js</a>, <a href="main.js.html#line367">line 367</a>
     </li></ul></dd>
     
 
@@ -563,7 +729,7 @@
 
 
 <div class="description">
-    Gestiona la lógica de compra y devolución de objetos.Actualiza el inventario del jugador, el dinero gastado y la interfaz.
+    Gestiona la lógica de compra y devolución de objetos.
 </div>
 
 
@@ -661,7 +827,7 @@
 
             
 
-            <td class="description last">El contenedor visual de la tarjeta de producto.</td>
+            <td class="description last">El contenedor visual de la tarjeta.</td>
         </tr>
 
     
@@ -702,7 +868,95 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="main.js.html">main.js</a>, <a href="main.js.html#line159">line 159</a>
+        <a href="main.js.html">main.js</a>, <a href="main.js.html#line252">line 252</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        
+            
+
+    
+
+    
+    <h4 class="name" id="~iniciarSistemaBatallas"><span class="type-signature">(inner) </span>iniciarSistemaBatallas<span class="signature">()</span><span class="type-signature"></span></h4>
+    
+
+    
+
+
+
+<div class="description">
+    Inicializa el carrusel de batallas.
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="main.js.html">main.js</a>, <a href="main.js.html#line335">line 335</a>
     </li></ul></dd>
     
 
@@ -790,7 +1044,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="main.js.html">main.js</a>, <a href="main.js.html#line27">line 27</a>
+        <a href="main.js.html">main.js</a>, <a href="main.js.html#line40">line 40</a>
     </li></ul></dd>
     
 
@@ -826,7 +1080,7 @@
     
 
     
-    <h4 class="name" id="~resolverResultadoCombate"><span class="type-signature">(inner) </span>resolverResultadoCombate<span class="signature">(enemigo)</span><span class="type-signature"></span></h4>
+    <h4 class="name" id="~lanzarAnimacionMonedas"><span class="type-signature">(inner) </span>lanzarAnimacionMonedas<span class="signature">()</span><span class="type-signature"></span></h4>
     
 
     
@@ -834,7 +1088,7 @@
 
 
 <div class="description">
-    Evalúa el resultado final del combate (Victoria o Derrota).Asigna puntos y gestiona la transición a la siguiente ronda o pantalla final.
+    Crea la animación de 3 monedas cayendo.
 </div>
 
 
@@ -843,55 +1097,6 @@
 
 
 
-
-
-    <h5>Parameters:</h5>
-    
-
-<table class="params">
-    <thead>
-    <tr>
-        
-        <th>Name</th>
-        
-
-        <th>Type</th>
-
-        
-
-        
-
-        <th class="last">Description</th>
-    </tr>
-    </thead>
-
-    <tbody>
-    
-
-        <tr>
-            
-                <td class="name"><code>enemigo</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type"><a href="Enemigo.html">Enemigo</a></span>
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last">El enemigo contra el que se ha luchado.</td>
-        </tr>
-
-    
-    </tbody>
-</table>
 
 
 
@@ -927,7 +1132,887 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="main.js.html">main.js</a>, <a href="main.js.html#line328">line 328</a>
+        <a href="main.js.html">main.js</a>, <a href="main.js.html#line435">line 435</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        
+            
+
+    
+
+    
+    <h4 class="name" id="~lanzarConfeti"><span class="type-signature">(inner) </span>lanzarConfeti<span class="signature">()</span><span class="type-signature"></span></h4>
+    
+
+    
+
+
+
+<div class="description">
+    Efecto visual de confeti.
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="main.js.html">main.js</a>, <a href="main.js.html#line540">line 540</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        
+            
+
+    
+
+    
+    <h4 class="name" id="~mostrarEstadoFinal"><span class="type-signature">(inner) </span>mostrarEstadoFinal<span class="signature">()</span><span class="type-signature"></span></h4>
+    
+
+    
+
+
+
+<div class="description">
+    Muestra las estadísticas finales calculadas antes del combate.
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="main.js.html">main.js</a>, <a href="main.js.html#line304">line 304</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        
+            
+
+    
+
+    
+    <h4 class="name" id="~mostrarGaleriaEnemigos"><span class="type-signature">(inner) </span>mostrarGaleriaEnemigos<span class="signature">()</span><span class="type-signature"></span></h4>
+    
+
+    
+
+
+
+<div class="description">
+    Muestra la lista de oponentes.
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="main.js.html">main.js</a>, <a href="main.js.html#line315">line 315</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        
+            
+
+    
+
+    
+    <h4 class="name" id="~mostrarPantallaFinal"><span class="type-signature">(inner) </span>mostrarPantallaFinal<span class="signature">()</span><span class="type-signature"></span></h4>
+    
+
+    
+
+
+
+<div class="description">
+    Escena final de resultados y guardado en LocalStorage.
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="main.js.html">main.js</a>, <a href="main.js.html#line464">line 464</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        
+            
+
+    
+
+    
+    <h4 class="name" id="~mostrarRankingEnPantalla"><span class="type-signature">(inner) </span>mostrarRankingEnPantalla<span class="signature">()</span><span class="type-signature"></span></h4>
+    
+
+    
+
+
+
+<div class="description">
+    Rellena la tabla HTML del ranking.
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="main.js.html">main.js</a>, <a href="main.js.html#line498">line 498</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        
+            
+
+    
+
+    
+    <h4 class="name" id="~prepararBatalla"><span class="type-signature">(inner) </span>prepararBatalla<span class="signature">()</span><span class="type-signature"></span></h4>
+    
+
+    
+
+
+
+<div class="description">
+    Prepara el escenario para un combate individual.
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="main.js.html">main.js</a>, <a href="main.js.html#line343">line 343</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        
+            
+
+    
+
+    
+    <h4 class="name" id="~refrescarDineroVisual"><span class="type-signature">(inner) </span>refrescarDineroVisual<span class="signature">()</span><span class="type-signature"></span></h4>
+    
+
+    
+
+
+
+<div class="description">
+    Función para actualizar visualmente el monedero en el footer.Sincroniza el valor de jugador.dinero con el elemento #tr.
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="main.js.html">main.js</a>, <a href="main.js.html#line24">line 24</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        
+            
+
+    
+
+    
+    <h4 class="name" id="~renderizarInventarioUI"><span class="type-signature">(inner) </span>renderizarInventarioUI<span class="signature">()</span><span class="type-signature"></span></h4>
+    
+
+    
+
+
+
+<div class="description">
+    Renderiza los iconos de los objetos comprados en los slots del footer.Esto asegura que las imágenes se vean en los recuadros correspondientes.
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="main.js.html">main.js</a>, <a href="main.js.html#line285">line 285</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        
+            
+
+    
+
+    
+    <h4 class="name" id="~resolverResultadoCombate"><span class="type-signature">(inner) </span>resolverResultadoCombate<span class="signature">()</span><span class="type-signature"></span></h4>
+    
+
+    
+
+
+
+<div class="description">
+    Gestiona el premio tras la victoria y la animación de monedas
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="main.js.html">main.js</a>, <a href="main.js.html#line405">line 405</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        
+            
+
+    
+
+    
+    <h4 class="name" id="~siguienteRonda"><span class="type-signature">(inner) </span>siguienteRonda<span class="signature">()</span><span class="type-signature"></span></h4>
+    
+
+    
+
+
+
+<div class="description">
+    Pasa al siguiente enemigo o termina el juego.
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="main.js.html">main.js</a>, <a href="main.js.html#line451">line 451</a>
     </li></ul></dd>
     
 
@@ -979,7 +2064,7 @@
 <br class="clear">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 4.0.5</a> on Wed Dec 03 2025 23:14:29 GMT+0100 (hora estándar de Europa central)
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 4.0.5</a> on Thu Jan 15 2026 02:52:20 GMT+0100 (hora estándar de Europa central)
 </footer>
 
 <script> prettyPrint(); </script>

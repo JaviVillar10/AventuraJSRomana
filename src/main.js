@@ -12,7 +12,7 @@ import { Producto } from './classes/Producto.js';
  * @module main
  */
 
-// --- ESTADO ---
+
 let jugador;
 let enemigos = [];
 let enemigoActualIndex = 0;
@@ -26,7 +26,6 @@ const refrescarDineroVisual = () => {
     if (elTr) {
         elTr.textContent = jugador.dinero;
     }
-    // Sincroniza también el contador del mercado para evitar confusiones
     const elGasto = document.getElementById('gasto-total');
     if (elGasto) {
         elGasto.textContent = jugador.dinero;
@@ -47,10 +46,9 @@ const init = () => {
         DATOS_JUGADOR.defensaBase
     );
     
-    // Propiedad dinero inicial
+    
     jugador.dinero = 500;
     
-    // Inicializamos el monedero fijo al cargar
     refrescarDineroVisual();
 
     enemigos = LISTA_ENEMIGOS.map(datos => {
@@ -63,6 +61,8 @@ const init = () => {
 
     asignarEventosBotones();
     actualizarInfoJugadorInicio();
+    sembrarRankingFicticio();
+    renderizarInventarioUI();
 };
 
 /**
@@ -97,7 +97,7 @@ const asignarEventosBotones = () => {
         location.reload();
     });
 
-    // --- LÓGICA DE VALIDACIÓN ---
+
     document.getElementById('btn-ir-inicio').addEventListener('click', () => {
         const formulario = document.getElementById('crear-personaje');
         const errNom = document.getElementById('error-nombre');
@@ -118,6 +118,11 @@ const asignarEventosBotones = () => {
             errores = true;
         }
 
+        if (atkVal < 0 || defVal < 0) {
+        errStat.textContent = "El ataque y la defensa no pueden ser valores negativos.";
+        errores = true;
+    }
+
         if (vidVal < 100) {
             errStat.textContent = "La vida no puede ser inferior a 100 puntos.";
             errores = true;
@@ -134,12 +139,10 @@ const asignarEventosBotones = () => {
             jugador.vidaMaxima = vidVal;
 
             actualizarInfoJugadorInicio();
-            // IMPORTANTE: Cambio de escena tras validación exitosa
             cambiarEscena('escena-inicio');
         }
     });
 
-    // --- EVENTOS DE RANKING ---
     const btnRanking = document.getElementById('btn-ir-ranking-escena');
     if (btnRanking) {
         btnRanking.addEventListener('click', () => {
@@ -223,7 +226,6 @@ const cargarMercado = () => {
             <p>+${productoObj.bonus} (${productoObj.tipo})</p>
             <p class="precio">${formatearPrecio(productoObj.precio)}</p>
             <button class="btn-comprar">Comprar</button>
-            <button class="btn-nada"></button>
         `;
 
         const btn = tarjetaDiv.querySelector('.btn-comprar');
@@ -277,18 +279,22 @@ function gestionarCompra(producto, boton, tarjetaDiv) {
 }
 
 /**
- * Renderiza los iconos de los objetos comprados.
+ * Renderiza los iconos de los objetos comprados en los slots del footer.
+ * Esto asegura que las imágenes se vean en los recuadros correspondientes.
  */
 const renderizarInventarioUI = () => {
-    const contInv = document.getElementById('contenedor-inventario');
-    contInv.innerHTML = '';
-    jugador.inventario.forEach(item => {
-        const img = document.createElement('img');
-        img.src = item.imagen;
-        img.style.width = '50px';
-        img.style.border = '1px solid #000';
-        img.title = item.nombre;
-        contInv.appendChild(img);
+    const slots = document.querySelectorAll('.slot');
+    
+    slots.forEach(slot => slot.innerHTML = '');
+
+    jugador.inventario.forEach((item, index) => {
+        if (slots[index]) {
+            const img = document.createElement('img');
+            img.src = item.imagen;
+            img.alt = item.nombre;
+            img.title = item.nombre;
+            slots[index].appendChild(img);
+        }
     });
 };
 
@@ -394,7 +400,7 @@ const actualizarBarrasVida = (enemigo) => {
 };
 
 /**
- * Gestiona el premio tras la victoria y la animación de monedas 
+ * Gestiona el premio tras la victoria y la animación de monedas
  */
 const resolverResultadoCombate = (enemigo) => {
     if (jugador.estaVivo()) {
@@ -405,10 +411,10 @@ const resolverResultadoCombate = (enemigo) => {
         jugador.sumarPuntos(ptsG);
         refrescarDineroVisual();
 
-        document.getElementById('mensaje-batalla').innerHTML = `¡Victoria! +${ptsG} pts <br> <span style="color: gold; font-weight: bold;">+${monG} monedas 🪙</span>`;
+        document.getElementById('mensaje-batalla').innerHTML = `¡Victoria! +${ptsG} pts <br> <span style="font-weight: bold;">+${monG} monedas 🪙</span>`;
         document.getElementById('mensaje-batalla').style.color = 'green';
 
-        // Lanzamos la lluvia de monedas
+      
         lanzarAnimacionMonedas();
 
         const btnSig = document.getElementById('btn-siguiente-batalla');
@@ -473,16 +479,21 @@ const mostrarPantallaFinal = () => {
     ranking.push(registro);
     localStorage.setItem('ranking_gladiadores', JSON.stringify(ranking));
 
-    if (totalFinal >= PUNTOS_PARA_VETERANO) {
+    const haGanadoElJuego = jugador.estaVivo() && enemigoActualIndex >= enemigos.length;
+
+    if (haGanadoElJuego) {
         rangoH2.textContent = "¡VETERANO DE LA ARENA!";
+        rangoH2.style.color = "var(--color-verde-exito)";
         lanzarConfeti();
     } else {
-        rangoH2.textContent = "Novato... Sigue entrenando.";
+        rangoH2.textContent = "Novato... Has caído en combate.";
+        rangoH2.style.color = "var(--color-rojo-sangre)";
     }
 };
 
 /**
- * Rellena la tabla HTML del ranking  con los 4 datos solicitados.
+ * Rellena la tabla HTML del ranking.
+ * 
  */
 const mostrarRankingEnPantalla = () => {
     const ranking = JSON.parse(localStorage.getItem('ranking_gladiadores')) || [];
@@ -494,7 +505,7 @@ const mostrarRankingEnPantalla = () => {
 
     ranking.forEach(item => {
         const fila = document.createElement('tr');
-        // Columnas: Nombre, Puntos, Monedas, Total
+
         fila.innerHTML = `
             <td>${item.gladiador}</td>
             <td>${item.puntosBatalla}</td>
@@ -503,6 +514,24 @@ const mostrarRankingEnPantalla = () => {
         `;
         cuerpo.appendChild(fila);
     });
+};
+
+
+const sembrarRankingFicticio = () => {
+    let ranking = JSON.parse(localStorage.getItem('ranking_gladiadores')) || [];
+    
+    if (ranking.length === 0) {
+        const gladiadoresLeyenda = [
+            { gladiador: "Adrian", puntosBatalla: 2000, monedasRestantes: 50, puntuacionTotal: 2550 },
+            { gladiador: "Diego", puntosBatalla: 1900, monedasRestantes: 30, puntuacionTotal: 2130 },
+            { gladiador: "Alberto", puntosBatalla: 1800, monedasRestantes: 80, puntuacionTotal: 1880 },
+            { gladiador: "Elias", puntosBatalla: 1500, monedasRestantes: 40, puntuacionTotal: 1540 },
+            { gladiador: "Paco", puntosBatalla: 1200, monedasRestantes: 100, puntuacionTotal: 1300 },
+            { gladiador: "Alejandro", puntosBatalla: 900, monedasRestantes: 20, puntuacionTotal: 920 },
+            { gladiador: "Ronic", puntosBatalla: 500, monedasRestantes: 10, puntuacionTotal: 510 }
+        ];
+        localStorage.setItem('ranking_gladiadores', JSON.stringify(gladiadoresLeyenda));
+    }
 };
 
 /**
