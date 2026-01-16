@@ -597,3 +597,106 @@ h1, h2, h3 {
     height: 14vh; 
     margin-bottom: 5px;
 }
+
+#pista {
+  position: absolute;
+  bottom: -10%;
+  right: 0%;
+  color: var(--color-blanco-titulos);
+  background-color: gray;
+  transition:  transform 0.5s ease-in-out;
+  margin-right: 3%;
+  width: 10%;
+ 
+
+}
+
+#pista:hover {
+    transform: translateY(-50%);
+  
+}
+
+#texto-pista{
+    color: var(--color-blanco-titulos);
+}
+
+
+
+
+.star1{
+clip-path: polygon(50% 0%, 61% 35%, 98% 35%, 68% 57%, 79% 91%,
+50% 70%, 21% 91%, 32% 57%, 2% 35%, 39% 35%);
+
+position: absolute;
+top: 10px;
+right: 0%;
+margin-block: 10px;
+height: 30px;
+width: 30px;
+background-color: var(--color-arena);
+animation: girarstar  10s ease-in-out infinite;
+}
+
+.star2{
+clip-path: polygon(50% 0%, 61% 35%, 98% 35%, 68% 57%, 79% 91%,
+50% 70%, 21% 91%, 32% 57%, 2% 35%, 39% 35%);
+
+position: absolute;
+top: 10px;
+right: 5%;
+margin-block: 10px;
+height: 30px;
+width: 30px;
+background-color: var(--color-arena);
+animation: girarstar  10s ease-in-out infinite;
+}
+
+.star3{
+clip-path: polygon(50% 0%, 61% 35%, 98% 35%, 68% 57%, 79% 91%,
+50% 70%, 21% 91%, 32% 57%, 2% 35%, 39% 35%);
+
+position: absolute;
+top: 10px;
+right: 10%;
+margin-block: 10px;
+height: 30px;
+width: 30px;
+background-color: var(--color-arena);
+animation: girarstar  10s ease-in-out infinite;
+}
+
+.star4{
+clip-path: polygon(50% 0%, 61% 35%, 98% 35%, 68% 57%, 79% 91%,
+50% 70%, 21% 91%, 32% 57%, 2% 35%, 39% 35%);
+
+position: absolute;
+top: 10px;
+right: 15%;
+margin-block: 10px;
+height: 30px;
+width: 30px;
+background-color: var(--color-arena);
+animation: girarstar  10s ease-in-out infinite;
+}
+
+.star5{
+clip-path: polygon(50% 0%, 61% 35%, 98% 35%, 68% 57%, 79% 91%,
+50% 70%, 21% 91%, 32% 57%, 2% 35%, 39% 35%);
+
+position: absolute;
+top: 10px;
+right: 20%;
+margin-block: 10px;
+height: 30px;
+width: 30px;
+background-color: var(--color-arena);
+animation: girarstar  10s ease-in-out infinite;
+}
+
+@keyframes girarstar {
+  from { transform: rotate(0deg);}
+    to { transform: rotate(1200deg); }
+}
+
+
+
