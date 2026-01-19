@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AventuraJSRomana</title>
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    <script type="module" src="src/objeto.js"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/water.css@2/out/water.css">
+</head>
+<body>
+
+    <main id="app-container">
+
+        <section id="escena-crear" class="escena visible">
+            <div class="tarjeta-crear">
+                <h1>AÑADE EL OBJETO</h1>
+
+                <form id="crear-objeto">
+                    <label for="nombre">Nombre:</label>
+                    <input type="text" name="nombre" id="nombre-input">
+                    <span id="error-nombre"></span>
+
+                    <label for="precio">Precio:</label>
+                    <input type="number" name="precio" value="0" min="0" max="99">
+
+                    <label for="rareza">Rareza:</label>
+                    <select name="rareza">
+                    <option>Comun</option>
+                    <option>Raro</option>
+                    <option>Epico</option></select>
+
+                    <label for="tipo">Tipo:</label>
+                    <select name="tipo">
+                    <option>Armadura</option>
+                    <option>Arma</option>
+                    <option>Consumible</option></select>
+                
+                    <label for="bonus">Bonus:</label>
+                    <input type="text" name="bonus">
+
+                    <label for="imagen">Imagen:</label>
+                    <input type="file" name="imagen">
+                    
+
+                    <span id="error-stats"></span>
+                    <button type="submit" style="display:none;">Submit</button>
+                </form>
+
+                <button type="submit" id="btn-ir-objeto" >Crear Objeto</button>
+            </div>
+        </section>
+
+    </main>
+
+</body>
+</html>
