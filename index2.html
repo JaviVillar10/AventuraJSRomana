@@ -3,55 +3,60 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AventuraJSRomana</title>
-    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
-    <script type="module" src="src/objeto.js"></script>
+    <title>Gestión de Objetos - AventuraJSRomana</title>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/water.css@2/out/water.css">
 </head>
 <body>
 
-    <main id="app-container">
+    <h1>Añadir nuevo objeto al mercado</h1>
 
-        <section id="escena-crear" class="escena visible">
-            <div class="tarjeta-crear">
-                <h1>AÑADE EL OBJETO</h1>
+    <form id="crear-objeto">
 
-                <form id="crear-objeto">
-                    <label for="nombre">Nombre:</label>
-                    <input type="text" name="nombre" id="nombre-input">
-                    <span id="error-nombre"></span>
+        <label for="nombre">Nombre:</label>
+        <input type="text" id="nombre" name="nombre"
+            minlength="3"
+            pattern="[A-ZÁÉÍÓÚÑ][a-zA-ZÁÉÍÓÚáéíóúñÑ ]{2,}"
+            title="Debe empezar por mayúscula, contener solo letras y tener mínimo 3 caracteres."
+            placeholder="Espada Corta"
+            required>
 
-                    <label for="precio">Precio:</label>
-                    <input type="number" name="precio" value="0" min="0" max="99">
+        <label for="precio">Precio:</label>
+        <input type="number" id="precio" name="precio"
+            min="1" max="98" step="1"
+            title="Debe ser un número entero positivo menor de 99."
+            required>
 
-                    <label for="rareza">Rareza:</label>
-                    <select name="rareza">
-                    <option>Comun</option>
-                    <option>Raro</option>
-                    <option>Epico</option></select>
+        <label for="rareza">Rareza:</label>
+        <select id="rareza" name="rareza">
+            <option value="Común">Común</option>
+            <option value="Raro">Raro</option>
+            <option value="Épico">Épico</option>
+        </select>
 
-                    <label for="tipo">Tipo:</label>
-                    <select name="tipo">
-                    <option>Armadura</option>
-                    <option>Arma</option>
-                    <option>Consumible</option></select>
-                
-                    <label for="bonus">Bonus:</label>
-                    <input type="text" name="bonus">
+        <label for="tipo">Tipo:</label>
+        <select id="tipo" name="tipo">
+            <option value="Armadura">Armadura</option>
+            <option value="Arma">Arma</option>
+            <option value="Consumible">Consumible</option>
+        </select>
 
-                    <label for="imagen">Imagen:</label>
-                    <input type="file" name="imagen">
-                    
+        <label for="bonus">Bonus:</label>
+        <input type="text" id="bonus" name="bonus"
+            pattern="\+\d{1,3}"
+            title="Debe comenzar por + seguido de 1 a 3 dígitos (ej: +15, +100)."
+            placeholder="+10"
+            required>
 
-                    <span id="error-stats"></span>
-                    <button type="submit" style="display:none;">Submit</button>
-                </form>
+        <label for="imagen">Imagen:</label>
+        <input type="file" id="imagen" name="imagen" accept="image/*">
 
-                <button type="submit" id="btn-ir-objeto" >Crear Objeto</button>
-            </div>
-        </section>
+        <button type="submit">Crear Objeto</button>
 
-    </main>
+    </form>
 
+    <br>
+    <a href="index.html"><button type="button">Ir al videojuego</button></a>
+
+    <script src="src/objeto.js"></script>
 </body>
 </html>

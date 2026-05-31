@@ -16,6 +16,7 @@ import { Producto } from './classes/Producto.js';
 let jugador;
 let enemigos = [];
 let enemigoActualIndex = 0;
+let catalogoProductos = MERCADO_PRODUCTOS;
 
 /**
  * Función para actualizar visualmente el monedero en el footer.
@@ -48,7 +49,12 @@ const init = () => {
     
     
     jugador.dinero = 500;
-    
+
+    const productosGuardados = JSON.parse(localStorage.getItem('productos_javier'));
+    if (productosGuardados && productosGuardados.length > 0) {
+        catalogoProductos = productosGuardados;
+    }
+
     refrescarDineroVisual();
 
     enemigos = LISTA_ENEMIGOS.map(datos => {
@@ -207,7 +213,7 @@ const cargarMercado = () => {
     const rarezaConDescuento = rarezas[obtenerAleatorio(0, rarezas.length - 1)];
     const porcentajeDescuento = obtenerAleatorio(10, 50);
 
-    MERCADO_PRODUCTOS.forEach(datosProd => {
+    catalogoProductos.forEach(datosProd => {
         let productoObj = new Producto(
             datosProd.nombre, datosProd.imagen, datosProd.precio, 
             datosProd.tipo, datosProd.bonus, datosProd.rareza
